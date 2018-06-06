@@ -8,10 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Core\User\UserInterface as UserInterface;
 use App\Entity\User;
 
 
@@ -21,13 +19,13 @@ class UserController extends Controller
     /**
      * @Route("/user/login", name="app_login")
      */
-    /**public function login(Request $request)
+    public function login(Request $request)
     {
         $formBuilder = $this->createFormBuilder();
 
         $formBuilder
             ->add('email',TextType::class)
-            ->add('password',TextType::class)
+            ->add('password',PasswordType::class)
             ->add('login', SubmitType::class, array('label' => 'Connexion'));
 
         $form = $formBuilder->getForm();
@@ -41,6 +39,7 @@ class UserController extends Controller
             $userDb = $this->getDoctrine()
                 ->getRepository(User::class)
                 ->findBy(array('email' => $user['email'], 'password' => $user['password']));
+            $userDb = $userDb[0];
 
             if (!$userDb) {
                 return $this->render('user/login.html.twig', array(
@@ -49,11 +48,12 @@ class UserController extends Controller
                 ));
             }
             else {
-                $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                $token = new UsernamePasswordToken($userDb, null, 'main', $userDb->getRoles());
                 $this->get('security.token_storage')->setToken($token);
 
                 $this->get('session')->set('_security_main', serialize($token));
 
+                // Fire the login event manually
                 $event = new InteractiveLoginEvent($request, $token);
                 $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
                 return $this->redirectToRoute('app_show');
@@ -64,25 +64,6 @@ class UserController extends Controller
             'form' => $form->createView(),
             'errors' => false
         ));
-    }**/
-
-    public function login(Request $request){
-        $request = $this->getRequest();
-        $session = $request->getSession();
-
-        if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
-        } else {
-            $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
-            $session->remove(SecurityContext::AUTHENTICATION_ERROR);
-        }
-
-        $params = array(
-            "email" => $session->get(SecurityContext::LAST_USERNAME),
-            "error" => $error,
-        );
-
-        return $params;
     }
 
     public function check()
@@ -91,8 +72,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Method({"GET"})
-     * @Route("/logout", name="logout")
+     * @Route("/user/logout", name="/user/logout")
      */
     public function logout()
     {
