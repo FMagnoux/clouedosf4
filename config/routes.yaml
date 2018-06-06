@@ -11,8 +11,8 @@ app_inscription:
     controller: App\Controller\UserController::inscription
 
 app_signout:
-    path: /user/signout
-    controller: App\Controller\UserController::signout
+    path: /user/logout
+    controller: App\Controller\UserController::logout
 
 app_upload:
     path: /file/upload
