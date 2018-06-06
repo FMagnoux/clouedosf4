@@ -1,0 +1,24 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+app_login:
+    path: /user/login
+    controller: App\Controller\UserController::login
+
+app_inscription:
+    path: /user/inscription
+    controller: App\Controller\UserController::inscription
+
+app_signout:
+    path: /user/signout
+    controller: App\Controller\UserController::signout
+
+app_upload:
+    path: /file/upload
+    controller: App\Controller\FileController::upload
+
+app_show:
+    path: /file/show
+    controller: App\Controller\FileController::show
+
