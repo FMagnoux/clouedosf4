@@ -24,6 +24,6 @@ security:
                 target: /
     access_control:
         - { path: ^/user/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/user/logout$, roles: ROLE_ADMIN }
-        - { path: ^/file/show, roles: ROLE_ADMIN }
-        - { path: ^/file/upload, roles: ROLE_ADMIN }
+        - { path: ^/user/logout$, roles: ROLE_USER }
+        - { path: ^/file/show, roles: ROLE_USER }
+        - { path: ^/file/upload, roles: ROLE_USER }

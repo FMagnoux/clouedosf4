@@ -10,7 +10,7 @@ app_inscription:
     path: /user/inscription
     controller: App\Controller\UserController::inscription
 
-app_signout:
+app_logout:
     path: /user/logout
     controller: App\Controller\UserController::logout
 
@@ -21,4 +21,13 @@ app_upload:
 app_show:
     path: /file/show
     controller: App\Controller\FileController::show
+
+app_profil:
+    path: /user/profil
+    controller: App\Controller\UserController::profil
+
+app_home:
+    path: /home
+    controller: App\Controller\HomeController::home
+
 

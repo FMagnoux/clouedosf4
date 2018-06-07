@@ -107,7 +107,7 @@ class UserController extends Controller
             $liste_erreurs = $validator->validate($user);
 
             if(!$form->isValid()) {
-                return $this->render('user/inscription.twig', array(
+                return $this->render('user/inscription.html.twig', array(
                     'form' => $form->createView(),
                     'errors' => $liste_erreurs
                 ));
@@ -123,7 +123,7 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('user/inscription.twig', array(
+        return $this->render('user/inscription.html.twig', array(
             'form' => $form->createView(),
         ));
     }
