@@ -12,7 +12,7 @@
     <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Inscription</h1>
     <div class="row">
         <div class="col-md-4"></div>
-        {{ form_errors(form.email) }}
+        {{ form_errors(form.email, { 'attr': {'class': 'form-control col-md-4 center'}}) }}
         {{ form_widget(form.email, { 'attr': {'class': 'form-control col-md-4 center','placeholder':'Adresse Email'}}) }}
     </div>
     <br>

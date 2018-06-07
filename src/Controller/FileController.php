@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Entity\File;
 
 class FileController extends Controller
 {
@@ -21,11 +22,10 @@ class FileController extends Controller
     public function show()
     {
         $files = $this->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(array('id_user' => $_SESSION['idUser']));
+            ->getRepository(File::class)
+            ->findBy(array('userId' => $this->get('security.token_storage')->getToken()->getUser()->getId()));
 
-
-        return $this->render('file/show.twig', array(
+        return $this->render('file/show.html.twig', array(
             'files' => $files
         ));
     }
