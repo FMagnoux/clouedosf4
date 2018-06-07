@@ -17,6 +17,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class User implements UserInterface
 {
     private $username;
+
+    /**
+     * @ORM\Column(type="array")
+     */
     private $roles;
     private $salt;
 

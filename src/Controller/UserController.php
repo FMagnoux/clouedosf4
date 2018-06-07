@@ -53,7 +53,6 @@ class UserController extends Controller
 
                 $this->get('session')->set('_security_main', serialize($token));
 
-                // Fire the login event manually
                 $event = new InteractiveLoginEvent($request, $token);
                 $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
                 return $this->redirectToRoute('app_show');
