@@ -30,4 +30,11 @@ app_home:
     path: /home
     controller: App\Controller\HomeController::home
 
+app_update_user:
+    path: /user/update
+    controller: App\Controller\UserController::update
+
+app_delete_user:
+    path: /user/delete
+    controller: App\Controller\UserController::delete
 

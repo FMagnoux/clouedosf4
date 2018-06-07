@@ -22,6 +22,7 @@ class User implements UserInterface
      * @ORM\Column(type="array")
      */
     private $roles;
+
     private $salt;
 
     public function getRoles() {
@@ -42,13 +43,14 @@ class User implements UserInterface
     }
 
     public function __construct() {
-        // De base, on va attribuer au nouveau utilisateur, le rôle « ROLE_USER »
         $this->roles = array("ROLE_USER");
-        // Chaque utilisateur va se voir attribuer une clé permettant
-        // de saler son mot de passe. Cela n'est pas obligatoire,
-        // on pourrait mettre $salt à null
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
     }
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $space = 1000000;
 
     /**
      * @ORM\Id()
@@ -161,4 +163,21 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSpace()
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param mixed $space
+     */
+    public function setSpace($space): void
+    {
+        $this->space = $space;
+    }
+
 }

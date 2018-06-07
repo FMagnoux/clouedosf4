@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use App\Entity\User;
 
 
@@ -124,6 +125,51 @@ class UserController extends Controller
         }
 
         return $this->render('user/inscription.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function profil(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        return $this->render('user/profil.html.twig', array(
+            'user' => $user,
+        ));
+    }
+
+    public function update(Request $request){
+
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $formBuilder = $this->createFormBuilder();
+
+        $formBuilder
+            ->add('email',TextType::class, array('data' => $user->getEmail()))
+            ->add('password', RepeatedType::class, array(
+                    'type' => PasswordType::class,
+                    'invalid_message' => 'Les mots de passe doivent être identiques',
+                )
+            )
+            ->add('update', SubmitType::class, array('label' => 'Valider'));
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $userFields = $form->getData();
+
+            $user->setPassword($userFields['password']);
+            $user->setEmail($userFields['email']);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_profil');
+
+        }
+        return $this->render('user/update.html.twig', array(
             'form' => $form->createView(),
         ));
     }
