@@ -179,6 +179,6 @@ class UserController extends Controller
      */
     public function signout()
     {
-        session_destroy();
+        $this->get('security.token_storage')->setToken(null);
     }
 }

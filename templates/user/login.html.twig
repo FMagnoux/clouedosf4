@@ -1,5 +1,6 @@
 {% extends "base.html.twig" %}
 
+{% block body %}
 {% if errors %}
     <div class="row">
         <div class="col-md-4"></div>
@@ -26,4 +27,4 @@
 
 {{ form_end(form) }}
 
-
+{% endblock %}

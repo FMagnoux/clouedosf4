@@ -21,9 +21,12 @@ security:
                 check_path: user/login
             logout:
                 path: /user/logout
-                target: /
+                target: /user/login
     access_control:
         - { path: ^/user/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/logout$, roles: ROLE_USER }
+        - { path: ^/user/profil$, roles: ROLE_USER }
+        - { path: ^/user/update$, roles: ROLE_USER }
+        - { path: ^/user/delete$, roles: ROLE_USER }
         - { path: ^/file/show, roles: ROLE_USER }
         - { path: ^/file/upload, roles: ROLE_USER }
