@@ -4,7 +4,9 @@
     <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Ajouter un fichier</h1>
     <div class="row">
         <div class="col-md-4"></div>
-        {{ form_errors(form.name, { 'attr': {'class': 'form-control col-md-4'}}) }}
+        {% if errorName %}
+            <p class="form-control col-md-4">{{ errorName }}</p>
+        {% endif %}
         {{ form_widget(form.name, { 'attr': {'class': 'form-control col-md-4','placeholder':'Nom du fichier'}}) }}
     </div>
     <br>
@@ -12,9 +14,11 @@
     </div>
     <div class="row">
         <div class="col-md-4"></div>
-        {{ form_widget(form.upload, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
+        {{ form_row(form.fileupload) }}
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_row(form.upload, { 'attr': {'class': 'btn btn-lg btn-primary btn-block'} }) }}
     </div>
     {{ form_end(form) }}
 {% endblock %}
-
-
