@@ -89,11 +89,12 @@ class FileController extends Controller
     }
 
     public function update(File $file , Request $request){
+
         $formBuilder = $this->createFormBuilder();
 
         $formBuilder
             ->add('name', TextType::class, array('data' => $file->getName()))
-            ->add('update', SubmitType::class, ['label' => 'Ajouter le fichier']);
+            ->add('update', SubmitType::class, ['label' => 'Modifier le fichier']);
 
         $form = $formBuilder->getForm();
 
@@ -101,9 +102,27 @@ class FileController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $data = $form->getData();
+            $file->setName($data['name']);
+
+            if($this->checkUniqueName($file->getName())){
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($file);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_show');
+
+            }
+            else {
+                return $this->render('file/update.html.twig', array(
+                    'form' => $form->createView(),
+                    'errorName' => "Le nom du fichier est déjà existant dans votre espace"
+                ));
+            }
         }
 
-        return $this->render('file/upload.html.twig', [
+        return $this->render('file/update.html.twig', [
             'form' => $form->createView(),
         ]);
     }
