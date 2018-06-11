@@ -35,11 +35,11 @@ app_show:
     controller: App\Controller\FileController::show
 
 app_file_update:
-    path: /file/update/{entity}
+    path: /file/update/{id}
     controller: App\Controller\FileController::update
 
 app_file_delete:
-    path: /file/delete/{entity}
+    path: /file/delete/{id}
     controller: App\Controller\FileController::delete
 
 app_home:

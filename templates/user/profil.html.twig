@@ -14,7 +14,7 @@
                         <p>
                             <i class="glyphicon glyphicon-envelope"></i> {{ user.email }}
                             <br />
-                            <i class="glyphicon glyphicon-cloud"></i> {{ user.space/1000 }} Mo
+                            <i class="glyphicon glyphicon-cloud"></i> {{ (user.space/1000)|number_format(0) }} Mo
                             <br />
                             <i class="glyphicon glyphicon-ok"></i> {{ user.dateInscription|date('d/m/Y') }}
                         </p>

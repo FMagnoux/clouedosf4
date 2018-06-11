@@ -37,16 +37,18 @@ class FileController extends Controller
             $user = $this->get('security.token_storage')->getToken()->getUser();
 
             $fileUploaded = $data['fileupload'];
-            $file->setName($data['name'].$fileUploaded->guessExtension());
+            $file->setName(str_replace(array(" ", "."), "_",$data['name']));
+            $file->setExtension($fileUploaded->guessExtension());
             if($this->checkUniqueName($file->getName())){
-                $fileUploaded->move('../public/'.$user->getFolder(), $data['name'].$fileUploaded->guessExtension());
+                $file->setPath('../public/'.$user->getFolder().'/'.$data['name'].".".$fileUploaded->guessExtension());
+                $file->setSize($fileUploaded->getSize());
+
+                $fileUploaded->move('../public/'.$user->getFolder(), $data['name'].".".$fileUploaded->guessExtension());
 
                 $file->setDateAdd(new \DateTime());
                 $file->setDateUpdate(new \DateTime());
-                $file->setPath('../public/'.$user->getFolder().'/'.$data['name']);
                 $file->setUser($user);
                 $file->setUserId($user->getId());
-                $file->setSize(filesize('../public/'.$user->getFolder().'/'.$data['name']));
 
                 $user->setSpace($user->getSpace() - $file->getSize());
 
@@ -72,23 +74,33 @@ class FileController extends Controller
     /**
      * @Route("/file/delete", name="app_file_delete")
      */
-    public function delete(File $file){
+    public function delete($id){
+
+        $file = $this->getDoctrine()
+            ->getRepository(File::class)
+            ->find(array('id' => $id));
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $user->setSpace($user->getSpace() + $file->getSize());
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($file);
-        $entityManager->persist($user);
-        $entityManager->flush();
+        if(unlink($file->getPath())){
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($file);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_show');
+        }
 
-        unlink("../public/".$user->getFolder()."/".$file->getName());
-
-        return $this->redirectToRoute('app_show');
-
+        return $this->render('file/show.html.twig', array(
+            'errorName' => "Impossible de supprimer le fichier"
+        ));
     }
 
-    public function update(File $file , Request $request){
+    public function update($id , Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $file = $this->getDoctrine()
+            ->getRepository(File::class)
+            ->find(array('id' => $id));
 
         $formBuilder = $this->createFormBuilder();
 
@@ -103,13 +115,21 @@ class FileController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-            $file->setName($data['name']);
 
-            if($this->checkUniqueName($file->getName())){
+            if($this->checkUniqueName($data['name'])){
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($file);
-                $entityManager->flush();
+                if(rename(
+                    "../public/".$user->getFolder()."/".$file->getName().".".$file->getExtension(),
+                    "../public/".$user->getFolder()."/".$data['name'].".".$file->getExtension())
+                ){
+                    $file->setName($data['name']);
+                    $file->setDateUpdate(new \DateTime());
+                    $file->setPath("../public/".$user->getFolder()."/".$data['name'].".".$file->getExtension());
+
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($file);
+                    $entityManager->flush();
+                }
 
                 return $this->redirectToRoute('app_show');
 

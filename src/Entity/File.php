@@ -62,6 +62,11 @@ class File
      */
     private $path;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $extension;
+
     public function getId()
     {
         return $this->id;
@@ -154,6 +159,25 @@ class File
     {
         $this->dateUpdate = $dateUpdate;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param mixed $extension
+     */
+    public function setExtension($extension): void
+    {
+        $this->extension = $extension;
+    }
+
+
+
 
 
 

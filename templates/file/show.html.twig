@@ -14,8 +14,8 @@
                                     <p class="card-text">Dernière modification: {{ file.dateUpdate|date('d/m/Y') }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{ path('app_file_update', { 'entity': file }) }}">Modifier</a></button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger"><a href="{{ path('app_file_delete', { 'entity': file }) }}">Supprimer</a></button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{ path('app_file_update', { 'id': file.id }) }}">Modifier</a></button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger"><a href="{{ path('app_file_delete', { 'id': file.id }) }}">Supprimer</a></button>
                                         </div>
                                         <small class="text-muted">Ajouté le {{ file.dateAdd|date('d/m/Y') }}</small>
                                     </div>
