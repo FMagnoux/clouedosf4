@@ -1,15 +1,23 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-{% if errors %}
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4" style="color: red; text-align: center">{{ errors }}</div>
-    </div>
-{% endif %}
 
 {{ form_start(form) }}
 <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Connexion</h1>
+    {% if errors is defined %}
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4" style="color: red; text-align: center">{{ errors }}</div>
+        </div>
+        <br>
+    {% endif %}
+    {% if accountCreated is defined %}
+        <div class="row">
+            <div class="col-md-4"></div>
+            <p style="color: green">{{ accountCreated }}</p>
+        </div>
+        <br>
+    {% endif %}
 <div class="row">
     <div class="col-md-4"></div>
     {{ form_widget(form.email, { 'attr': {'class': 'form-control col-md-4','placeholder':'Adresse Email'}}) }}

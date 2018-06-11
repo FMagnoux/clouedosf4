@@ -14,8 +14,8 @@
                                     <p class="card-text">Dernière modification: {{ file.dateUpdate|date('d/m/Y') }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{ path('app_file_update', { 'id': file.id }) }}">Modifier</a></button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger"><a href="{{ path('app_file_delete', { 'id': file.id }) }}">Supprimer</a></button>
+                                            <a href="{{ path('app_file_update', { 'id': file.id }) }}">Modifier<button type="button" class="btn btn-sm btn-outline-secondary"></button></a>
+                                            <a href="{{ path('app_file_delete', { 'id': file.id }) }}">Supprimer<button type="button" class="btn btn-sm btn-outline-danger"></button></a>
                                         </div>
                                         <small class="text-muted">Ajouté le {{ file.dateAdd|date('d/m/Y') }}</small>
                                     </div>
@@ -27,7 +27,22 @@
             </div>
         {% endfor %}
     {% else %}
-        <div>Pas de fichier présent dans votre espace</div>
+        <div class="row justify-content-center">
+            <div class="col=12 mt-3">
+                <div class="jumbotron ">
+                    <h1 class="display-4">Pas de fichier</h1>
+                    <p class="lead">Pourquoi laisser l'espace vide alors que vous avez plein de place :)</p>
+                    <hr class="my-4">
+                    <p>Ajouter un ou plusieurs fichiers pour compléter votre espace</p>
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{{ path('app_upload') }}" role="button">Ajouter un fichier</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+
+
     {% endif %}
 {% endblock %}
 

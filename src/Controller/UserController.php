@@ -40,8 +40,7 @@ class UserController extends Controller
 
             $userDb = $this->getDoctrine()
                 ->getRepository(User::class)
-                ->findBy(array('email' => $user['email'], 'password' => $user['password']));
-            $userDb = $userDb[0];
+                ->findOneBy(array('email' => $user['email'], 'password' => $user['password']));
 
             if (!$userDb) {
                 return $this->render('user/login.html.twig', array(
@@ -63,7 +62,6 @@ class UserController extends Controller
 
         return $this->render('user/login.html.twig', array(
             'form' => $form->createView(),
-            'errors' => false
         ));
     }
 
@@ -107,7 +105,10 @@ class UserController extends Controller
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return $this->redirectToRoute('app_login');
+
+                return $this->redirectToRoute('app_login', array('accountCreated' => "Votre compte a bien été créé"));
+
+
             }
         }
 
@@ -191,7 +192,9 @@ class UserController extends Controller
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_logout');
+        $this->get('security.token_storage')->setToken(null);
+
+        return $this->redirectToRoute('app_login');
 
     }
 
