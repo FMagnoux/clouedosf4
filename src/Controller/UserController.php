@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use App\Entity\File;
 use App\Entity\User;
 
 
@@ -66,20 +67,6 @@ class UserController extends Controller
         ));
     }
 
-    public function check()
-    {
-        throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
-    }
-
-    /**
-     * @Route("/user/logout", name="/user/logout")
-     */
-    public function logout()
-    {
-        throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
-    }
-
-
     /**
      * @Route("/user/inscription", name="app_inscription")
      */
@@ -129,6 +116,9 @@ class UserController extends Controller
         ));
     }
 
+    /**
+     * @Route("/user/profil", name="app_profil")
+     */
     public function profil(){
         $user = $this->get('security.token_storage')->getToken()->getUser();
         return $this->render('user/profil.html.twig', array(
@@ -136,6 +126,9 @@ class UserController extends Controller
         ));
     }
 
+    /**
+     * @Route("/user/update", name="app_update_user")
+     */
     public function update(Request $request){
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -175,9 +168,37 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user/signout", name="app_signout")
+     * @Route("/user/delete", name="app_delete_user")
      */
-    public function signout()
+    public function delete(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $files = $this->getDoctrine()
+            ->getRepository(File::class)
+            ->findBy(array('userId' => $this->get('security.token_storage')->getToken()->getUser()->getId()));
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        foreach ($files as $key => $value){
+            if(unlink($files[$key]->getPath())) {
+                $entityManager->remove($files[$key]);
+            }
+        }
+
+        if(rmdir("../public/".$user->getFolder())){
+            $entityManager->remove($user);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_logout');
+
+    }
+
+    /**
+     * @Route("/user/logout", name="app_logout")
+     */
+    public function logout()
     {
         $this->get('security.token_storage')->setToken(null);
     }

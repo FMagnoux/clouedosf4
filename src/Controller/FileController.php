@@ -96,6 +96,9 @@ class FileController extends Controller
         ));
     }
 
+    /**
+     * @Route("/file/update", name="app_file_update")
+     */
     public function update($id , Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $file = $this->getDoctrine()
@@ -161,6 +164,11 @@ class FileController extends Controller
         ));
     }
 
+
+    /**
+     * @param $nameFile
+     * @return bool
+     */
     private function checkUniqueName($nameFile){
         $files = $this->getDoctrine()
             ->getRepository(File::class)
