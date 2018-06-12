@@ -20,7 +20,6 @@ class FileController extends Controller
     {
         $formBuilder = $this->createFormBuilder();
 
-        //these fields must be rendered in the twig (name, fileupload, upload)
         $formBuilder
             ->add('name', TextType::class)
             ->add('fileupload', FileType::class)
@@ -39,31 +38,39 @@ class FileController extends Controller
             $fileUploaded = $data['fileupload'];
             $file->setName(str_replace(array(" ", "."), "_",$data['name']));
             $file->setExtension($fileUploaded->guessExtension());
-            if($this->checkUniqueName($file->getName())){
-
-                $file->setPath('../public/'.$user->getFolder().'/'.$data['name'].".".$fileUploaded->guessExtension());
-                $file->setSize($fileUploaded->getSize());
-
-                $fileUploaded->move('../public/'.$user->getFolder(), $data['name'].".".$fileUploaded->guessExtension());
-
-                $file->setDateAdd(new \DateTime());
-                $file->setDateUpdate(new \DateTime());
-                $file->setUser($user);
-                $file->setUserId($user->getId());
-
-                $user->setSpace($user->getSpace() - $file->getSize());
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($file, $user);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_show');
-            }
-            else {
+            if($user->getSpace() - $fileUploaded->getSize() <= 0){
                 return $this->render('file/upload.html.twig', array(
                     'form' => $form->createView(),
-                    'errorName' => "Le nom du fichier est déjà existant dans votre espace"
+                    'errorName' => "Il n'y a pas assez d'espace pour intégrer ce fichier"
                 ));
+            }
+            else {
+                if($this->checkUniqueName($file->getName())){
+
+                    $file->setPath('../public/'.$user->getFolder().'/'.$data['name'].".".$fileUploaded->guessExtension());
+                    $file->setSize($fileUploaded->getSize());
+
+                    $fileUploaded->move('../public/'.$user->getFolder(), $data['name'].".".$fileUploaded->guessExtension());
+
+                    $file->setDateAdd(new \DateTime());
+                    $file->setDateUpdate(new \DateTime());
+                    $file->setUser($user);
+                    $file->setUserId($user->getId());
+
+                    $user->setSpace($user->getSpace() - $file->getSize());
+
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($file, $user);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_show');
+                }
+                else {
+                    return $this->render('file/upload.html.twig', array(
+                        'form' => $form->createView(),
+                        'errorName' => "Le nom du fichier est déjà existant dans votre espace"
+                    ));
+                }
             }
         }
 

@@ -18,7 +18,6 @@ use App\Entity\User;
 
 class UserController extends Controller
 {
-
     /**
      * @Route("/user/login", name="app_login")
      */
@@ -109,8 +108,6 @@ class UserController extends Controller
                 $entityManager->flush();
 
                 return $this->redirectToRoute('app_login', array('accountCreated' => "Votre compte a bien été créé"));
-
-
             }
         }
 
@@ -184,11 +181,6 @@ class UserController extends Controller
                 return $this->redirectToRoute('app_profil');
 
             }
-
-
-
-
-
         }
         return $this->render('user/update.html.twig', array(
             'form' => $form->createView(),
