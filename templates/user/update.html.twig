@@ -31,6 +31,14 @@
                         <br>
                         <div class="row">
                             <div class="col-md-3"></div>
+                            {% if errorImg is defined %}
+                                <p style="color: red">{{ errorImg }}</p>
+                            {% endif %}
+                            {{ form_row(form.fileprofil) }}
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3"></div>
                             {{ form_widget(form.update, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-5'} }) }}
                         </div>
                         {{ form_end(form) }}

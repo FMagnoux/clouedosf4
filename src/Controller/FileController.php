@@ -40,6 +40,7 @@ class FileController extends Controller
             $file->setName(str_replace(array(" ", "."), "_",$data['name']));
             $file->setExtension($fileUploaded->guessExtension());
             if($this->checkUniqueName($file->getName())){
+
                 $file->setPath('../public/'.$user->getFolder().'/'.$data['name'].".".$fileUploaded->guessExtension());
                 $file->setSize($fileUploaded->getSize());
 
@@ -72,7 +73,7 @@ class FileController extends Controller
     }
 
     /**
-     * @Route("/file/delete", name="app_file_delete")
+     * @Route("/file/delete/{id}", name="app_file_delete")
      */
     public function delete($id){
 
@@ -97,7 +98,7 @@ class FileController extends Controller
     }
 
     /**
-     * @Route("/file/update", name="app_file_update")
+     * @Route("/file/update/{id}", name="app_file_update")
      */
     public function update($id , Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -162,6 +163,22 @@ class FileController extends Controller
         return $this->render('file/show.html.twig', array(
             'files' => $files
         ));
+    }
+
+    /**
+     * @Route("/file/download/{id}", name="app_file_download")
+     */
+    public function download($id){
+        $file = $this->getDoctrine()
+            ->getRepository(File::class)
+            ->find($id);
+
+        $file->setNbDownload($file->getNbDownload() + 1);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($file);
+        $entityManager->flush();
+
+        return $this->file($file->getPath());
     }
 
 

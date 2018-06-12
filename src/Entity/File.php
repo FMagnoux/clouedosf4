@@ -15,11 +15,17 @@ class File
      */
     private $user;
 
+    /**
+     * @param User $user
+     */
     public function setUser(\App\Entity\User $user)
     {
         $this->user = $user;
     }
 
+    /**
+     * @return mixed
+     */
     public function getUser()
     {
         return $this->user;
@@ -67,16 +73,32 @@ class File
      */
     private $extension;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nbDownload;
+
+
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return null|string
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return File
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -84,11 +106,18 @@ class File
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getSize(): ?int
     {
         return $this->size;
     }
 
+    /**
+     * @param int $size
+     * @return File
+     */
     public function setSize(int $size): self
     {
         $this->size = $size;
@@ -176,9 +205,19 @@ class File
         $this->extension = $extension;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getNbDownload()
+    {
+        return $this->nbDownload;
+    }
 
-
-
-
-
+    /**
+     * @param mixed $nbDownload
+     */
+    public function setNbDownload($nbDownload): void
+    {
+        $this->nbDownload = $nbDownload;
+    }
 }

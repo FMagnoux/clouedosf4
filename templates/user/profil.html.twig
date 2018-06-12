@@ -7,7 +7,11 @@
             <div class="well well-sm">
                 <div class="row">
                     <div class="col-sm-6 col-md-4">
-                        <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
+                        {% if user.pathImg %}
+                            <img src="{{ asset(user.pathImg) }}" height="300" width="200" alt=""/>
+                        {% else  %}
+                            <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
+                        {% endif %}
                     </div>
                     <div class="col-sm-6 col-md-8">
                         <h4>{{ user.pseudo }}</h4>
@@ -19,7 +23,7 @@
                             <i class="glyphicon glyphicon-ok"></i> {{ user.dateInscription|date('d/m/Y') }}
                         </p>
                         <div class="btn-group">
-                            <a href="{{ path('app_update_user') }}"><button type="button" class="btn btn-sm btn-outline-secondary">Modifier</button></a>
+                            <a href="{{ path('app_update_user') }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
                             <a href="{{ path('app_delete_user') }}" onclick="return confirm('Êtes vous certain de vouloir supprimer votre compte ? Aucune récupération n\'est possible')"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
                         </div>
                     </div>

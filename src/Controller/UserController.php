@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -101,6 +102,7 @@ class UserController extends Controller
                 $user->setDateInscription(new \DateTime());
                 $user->setFolder($user->getDateInscription()->format('Ymd').$user->getPseudo());
                 mkdir("../public/".$user->getFolder(), 777);
+                mkdir("../public/".$user->getFolder()."/profil", 777);
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
@@ -141,8 +143,10 @@ class UserController extends Controller
             ->add('password', RepeatedType::class, array(
                     'type' => PasswordType::class,
                     'invalid_message' => 'Les mots de passe doivent être identiques',
+                    'required' => false
                 )
             )
+            ->add('fileprofil', FileType::class)
             ->add('update', SubmitType::class, array('label' => 'Valider'));
 
         $form = $formBuilder->getForm();
@@ -153,14 +157,37 @@ class UserController extends Controller
 
             $userFields = $form->getData();
 
-            $user->setPassword($userFields['password']);
-            $user->setEmail($userFields['email']);
+            $fileUploaded = $userFields['fileprofil'];
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if(!in_array($fileUploaded->guessExtension(),array("jpg","jpeg","png"))){
+                return $this->render('user/update.html.twig', array(
+                    'form' => $form->createView(),
+                    'errorImg' => "La photo de profil transmise ne respecte pas le bon format de fichier (.jpg, .jpeg, .png)"
+                ));
+            }
+            else {
+                if($user->getPathImg()){
+                    unlink('../public/'.$user->getPathImg());
+                }
+                $user->setPathImg($user->getFolder().'/profil/'.$fileUploaded->getClientOriginalName());
+                $fileUploaded->move('../public/'.$user->getFolder()."/profil/", $fileUploaded->getClientOriginalName());
 
-            return $this->redirectToRoute('app_profil');
+                if($userFields['password']){
+                    $user->setPassword($userFields['password']);
+                }
+                $user->setEmail($userFields['email']);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_profil');
+
+            }
+
+
+
+
 
         }
         return $this->render('user/update.html.twig', array(

@@ -1,31 +1,35 @@
 {% extends "base.html.twig" %}
 {% block body %}
     {% if files %}
-        {% for file in files %}
-            <div class="album py-5 bg-light">
-                <div class="container">
-                    <div class="row">
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                {% for file in files %}
                         <div class="col-md-4">
                             <div class="card mb-4 box-shadow">
-                                <img class="card-img-top" src="../../public/images/fichier.jpg" alt="Card image cap">
+                                <div>
+                                    <img class="card-img-top" src="{{ asset('images/stripes-light.png') }}" height="60", width="155"/>
+                                </div>
                                 <div class="card-body">
                                     <p class="card-text">Nom: {{ file.name }}</p>
-                                    <p class="card-text">Taille: {{ file.size }}</p>
+                                    <p class="card-text">Taille: {{ (file.size/1000)|number_format(0) }} Mo</p>
                                     <p class="card-text">Dernière modification: {{ file.dateUpdate|date('d/m/Y') }}</p>
+                                    <p class="card-text">Téléchargé {{ file.nbDownload }} fois</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <a href="{{ path('app_file_update', { 'id': file.id }) }}">Modifier<button type="button" class="btn btn-sm btn-outline-secondary"></button></a>
-                                            <a href="{{ path('app_file_delete', { 'id': file.id }) }}">Supprimer<button type="button" class="btn btn-sm btn-outline-danger"></button></a>
+                                            <a href="{{ path('app_file_download', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Télécharger</button></a>
+                                            <a href="{{ path('app_file_update', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
+                                            <a href="{{ path('app_file_delete', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
                                         </div>
                                         <small class="text-muted">Ajouté le {{ file.dateAdd|date('d/m/Y') }}</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                {% endfor %}
                 </div>
             </div>
-        {% endfor %}
+        </div>
     {% else %}
         <div class="row justify-content-center">
             <div class="col=12 mt-3">
