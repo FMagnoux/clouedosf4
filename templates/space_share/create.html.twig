@@ -1,23 +1,6 @@
 {% extends "base.html.twig" %}
-
 {% block body %}
-    {{ form_start(form) }}
-    <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Ajouter une relation</h1>
-    <div class="row">
-        <div class="col-md-4"></div>
-        {{ form_widget(form.user, { 'attr': {'class': 'form-control col-md-4'}}) }}
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-4"></div>
-        {{ form_widget(form.lifetime, { 'attr': {'class': 'form-control col-md-4'} }) }}
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-4"></div>
-        {{ form_widget(form.create, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
-    </div>
-    {{ form_end(form) }}
+
 {% endblock %}
 
 

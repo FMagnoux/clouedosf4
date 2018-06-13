@@ -6,6 +6,7 @@ use App\Entity\SpaceShare;
 use App\Entity\User;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +19,13 @@ class SpaceShareController extends Controller
      */
     public function showSpace($main)
     {
+        if($main ==='true'){
+            $main = true;
+        }
+        else {
+            $main = false;
+        }
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $select = 'id_user_two';
@@ -31,14 +39,14 @@ class SpaceShareController extends Controller
 
         foreach ($spaces as $key => $value){
             if($main){
-                $spaces->setUserTwo();
+                $spaces[$key]->setUserTwo($this->getDoctrine());
             }
             else {
-                $spaces->setUserOne();
+                $spaces[$key]->setUserOne($this->getDoctrine());
             }
         }
 
-        return $this->render('space_share/showspecific.html.twig', [
+        return $this->render('space_share/showall.html.twig', [
             "spaces" => $spaces,
             "main" => $main
         ]);
@@ -51,6 +59,9 @@ class SpaceShareController extends Controller
         return $this->render('space_share/show.html.twig', []);
     }
 
+    /**
+     * @Route("/space/share/spaces/details/{id}", name="app_space_show_specific")
+     */
     public function details($id){
 
     }
@@ -66,7 +77,11 @@ class SpaceShareController extends Controller
             ->findAll();
 
         $users = array();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         foreach ($usersBdd as $key => $value){
+            if($usersBdd[$key]->getId() == $user->getId()){
+                unset($usersBdd[$key]);
+            }
             $users[$usersBdd[$key]->getPseudo()] = $usersBdd[$key]->getId();
         }
 
@@ -76,15 +91,39 @@ class SpaceShareController extends Controller
             ))
             ->add('lifetime', DateType::class, array(
             ))
+            ->add('password', PasswordType::class, array(
+                'required' => false
+            ))
             ->add('create', SubmitType::class, ['label' => 'Ajouter la relation']);
 
 
         $form = $formBuilder->getForm();
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $relation = $form->getData();
+
+            $today = new \DateTime('NOW');
+            if($relation['lifetime'] < $today){
+                return $this->render('space_share/create.html.twig', [
+                    'errorTime' => "La date indiquée est inférieure à la date du jour",
+                    'form' => $form->createView(),
+                ]);
+            }
+            else {
+                $spaceShare = new SpaceShare();
+                $spaceShare->setIdUserOne($this->get('security.token_storage')->getToken()->getUser()->getId());
+                $spaceShare->setIdUserTwo($relation['user']);
+                $spaceShare->setLife($relation['lifetime']);
+                if($relation['password']){
+                    $spaceShare->setPassword($relation['password']);
+                }
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($spaceShare);
+                $entityManager->flush();
+            }
         }
 
         return $this->render('space_share/create.html.twig', [
@@ -92,10 +131,17 @@ class SpaceShareController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/space/share/delete", name="app_space_update_specific")
+     */
     public function delete($id){
 
     }
 
+
+    /**
+     * @Route("/space/share/update", name="app_space_delete_specific")
+     */
     public function update($id){
 
     }

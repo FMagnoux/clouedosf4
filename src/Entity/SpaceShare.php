@@ -124,14 +124,14 @@ class SpaceShare
         return $this;
     }
 
-    public function setUserOne(){
-        $this->userOne = $this->getDoctrine()
+    public function setUserOne($doctrine){
+        $this->userOne = $doctrine
             ->getRepository(User::class)
             ->find($this->id_user_one);
     }
 
-    public function setUserTwo(){
-        $this->userTwo = $this->getDoctrine()
+    public function setUserTwo($doctrine){
+        $this->userTwo = $doctrine
             ->getRepository(User::class)
             ->find($this->id_user_two);
     }

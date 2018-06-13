@@ -8,8 +8,8 @@
                 <hr class="my-4">
                 <p>Vous pouvez consultez les dossiers que l'on partage avec vous, ceux que vous partagez ou créer une relation avec un dossier d'un ami</p>
                 <p class="lead">
-                    <a class="btn btn-primary btn-lg" href="{{ path('app_show_share_spaces') }}" role="button">Qui peux accéder à mon espace ?</a>
-                    <a class="btn btn-primary btn-lg" href="{{ path('app_show_share_spaces') }}" role="button">A quelle espace ai-je accès ?</a>
+                    <a class="btn btn-primary btn-lg" href="{{ path('app_show_specific_space', { 'main': "true" }) }}" role="button">Qui peux accéder à mon espace ?</a>
+                    <a class="btn btn-primary btn-lg" href="{{ path('app_show_specific_space', { 'main': "false" }) }}" role="button">A quelle espace ai-je accès ?</a>
                     <a class="btn btn-primary btn-lg" href="{{ path('app_create_share_spaces') }}" role="button">Créer une relation</a>
                 </p>
             </div>

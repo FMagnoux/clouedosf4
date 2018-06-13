@@ -1,0 +1,74 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {% if spaces %}
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    {% for space in spaces %}
+                        {% if main %}
+                            <div class="col-md-4">
+                                <div class="card mb-4 box-shadow">
+                                    <div>
+                                        <img class="card-img-top" src="{{ asset('images/stripes-light.png') }}" height="60", width="155"/>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">Espace de {{ space.userTwo.pseudo }}</p>
+                                        <p class="card-text">Espace restant : {{ (space.userTwo.space/1000)|number_format(0) }} Mo</p>
+                                        <p class="card-text">Lien actif jusqu'au: {{ space.life|date('d/m/Y') }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('app_space_show_specific', { 'id': space.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Voir</button></a>
+                                                <a href="{{ path('app_space_update_specific', { 'id': space.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
+                                                <a href="{{ path('app_space_delete_specific', { 'id': space.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-md-4">
+                                <div class="card mb-4 box-shadow">
+                                    <div>
+                                        <img class="card-img-top" src="{{ asset('images/stripes-light.png') }}" height="60", width="155"/>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">Espace de {{ space.userOne.pseudo }}</p>
+                                        <p class="card-text">Espace restant : {{ (space.userOne.space/1000)|number_format(0) }} Mo</p>
+                                        <p class="card-text">Lien actif jusqu'au: {{ space.life|date('d/m/Y') }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <a href="{{ path('app_space_show_specific', { 'id': space.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Voir</button></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col=12 mt-3">
+                <div class="jumbotron">
+                    <h1 class="display-4">Pas de relation</h1>
+                    {% if main %}
+                        <p class="lead">Vous ne partagez votre espace avec personne</p>
+                        <hr class="my-4">
+                        <p>Créer une relation pour partagez vos fichiers</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg" href="{{ path('app_create_share_spaces') }}" role="button">Ajouter une relation</a>
+                        </p>
+                    {% else %}
+                        <p class="lead">Personne ne partage son espace avec vous</p>
+                        <hr class="my-4">
+                        <p>Demandez à quelqu'un de vous partarger son espace</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
