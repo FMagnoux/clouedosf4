@@ -1,0 +1,47 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {% if shares %}
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    {% for share in shares %}
+                        <div class="col-md-4">
+                            <div class="card mb-4 box-shadow">
+                                <div>
+                                    <img class="card-img-top" src="{{ asset('images/stripes-light.png') }}" height="60", width="155"/>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ share.user.pseudo }} partage son espace avec vous</p>
+                                    <p class="card-text">Lien actif jusqu'au {{ share.life|date('d/m/Y') }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <a href="{{ path('app_update_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Voir</button></a>
+                                        </div>
+                                        {% if share.password %}
+                                            <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col=12 mt-3">
+                <div class="jumbotron ">
+                    <h1 class="display-4">Vous ne partagez votre espace avec personne</h1>
+                    <p class="lead">Créer une relation pour partager vos documents avec vos amis</p>
+                    <hr class="my-4">
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{{ path('app_create_share') }}" role="button">Ajouter une relation</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+

@@ -9,7 +9,7 @@ use App\Entity\Space;
 class SpaceController extends Controller
 {
     /**
-     * @Route("/space/{id}", name="app_show_space")
+     * @Route("/space/{id}", name="app_space_show")
      */
     public function show($id)
     {

@@ -27,16 +27,16 @@ class Share
     private $password;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\File", inversedBy="file")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="user")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="user")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="space")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $file;
+    private $space;
 
     /**
      * @return mixed
@@ -87,17 +87,17 @@ class Share
     /**
      * @return mixed
      */
-    public function getFile()
+    public function getSpace()
     {
-        return $this->file;
+        return $this->space;
     }
 
     /**
      * @param mixed $file
      */
-    public function setFile($file): void
+    public function setSpace($space): void
     {
-        $this->file = $file;
+        $this->space = $space;
     }
 
     /**
@@ -115,5 +115,4 @@ class Share
     {
         $this->user = $user;
     }
-
 }

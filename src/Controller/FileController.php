@@ -59,6 +59,7 @@ class FileController extends Controller
 
                     $file->setDateAdd(new \DateTime());
                     $file->setDateUpdate(new \DateTime());
+                    $file->setNbDownload(0);
                     $space->addFile($file);
                     $space->setSize($user->getSpace()->getSize() - $file->getSize());
 
@@ -66,7 +67,7 @@ class FileController extends Controller
                     $entityManager->persist($space);
                     $entityManager->flush();
 
-                    return $this->redirectToRoute('app_show_space', array('id' => $space->getId()));
+                    return $this->redirectToRoute('app_space_show', array('id' => $space->getId()));
                 }
                 else {
                     return $this->render('file/upload.html.twig', array(
@@ -83,7 +84,7 @@ class FileController extends Controller
     }
 
     /**
-     * @Route("/file/delete/{id}", name="app_file_delete")
+     * @Route("/file/delete/{id}", name="app_delete_file")
      */
     public function delete($id){
 
@@ -108,7 +109,7 @@ class FileController extends Controller
     }
 
     /**
-     * @Route("/file/update/{id}", name="app_file_update")
+     * @Route("/file/update/{id}", name="app_update_file")
      */
     public function update($id , Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -133,19 +134,19 @@ class FileController extends Controller
             if($this->checkUniqueName($data['name'])){
 
                 if(rename(
-                    "../public/".$user->getFolder()."/".$file->getName().".".$file->getExtension(),
-                    "../public/".$user->getFolder()."/".$data['name'].".".$file->getExtension())
+                    $user->getSpace()->getPath().$file->getName().".".$file->getExtension(),
+                    $user->getSpace()->getPath().$data['name'].".".$file->getExtension())
                 ){
                     $file->setName($data['name']);
                     $file->setDateUpdate(new \DateTime());
-                    $file->setPath("../public/".$user->getFolder()."/".$data['name'].".".$file->getExtension());
+                    $file->setPath($data['name'].".".$file->getExtension());
 
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($file);
                     $entityManager->flush();
                 }
 
-                return $this->redirectToRoute('app_show');
+                return $this->redirectToRoute('app_space_show', array('id' => $user->getSpace()->getId()));
 
             }
             else {
@@ -162,21 +163,7 @@ class FileController extends Controller
     }
 
     /**
-     * @Route("/file/show", name="app_show")
-     */
-    public function show()
-    {
-        $files = $this->getDoctrine()
-            ->getRepository(File::class)
-            ->findBy(array('userId' => $this->get('security.token_storage')->getToken()->getUser()->getId()));
-
-        return $this->render('file/show.html.twig', array(
-            'files' => $files
-        ));
-    }
-
-    /**
-     * @Route("/file/download/{id}", name="app_file_download")
+     * @Route("/file/download/{id}", name="app_download_file")
      */
     public function download($id){
         $file = $this->getDoctrine()
@@ -188,9 +175,10 @@ class FileController extends Controller
         $entityManager->persist($file);
         $entityManager->flush();
 
-        return $this->file($file->getPath());
-    }
+        $space = $this->get('security.token_storage')->getToken()->getUser()->getSpace();
 
+        return $this->file($space->getPath().$file->getPath());
+    }
 
     /**
      * @param $nameFile
@@ -198,7 +186,6 @@ class FileController extends Controller
      */
     private function checkUniqueName($nameFile){
         $files = $this->get('security.token_storage')->getToken()->getUser()->getSpace()->getFiles();
-
         foreach ($files as $key => $value){
             if($files[$key]->getName() == $nameFile){
                 return false;

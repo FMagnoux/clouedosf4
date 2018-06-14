@@ -58,7 +58,7 @@ class UserController extends Controller
 
                 $event = new InteractiveLoginEvent($request, $token);
                 $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
-                return $this->redirectToRoute('app_show_space', array('id' => $userDb->getSpace()->getId()));
+                return $this->redirectToRoute('app_space_show', array('id' => $userDb->getSpace()->getId()));
             }
         }
 
@@ -68,7 +68,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/inscription", name="app_inscription")
+     * @Route("/signup", name="app_signup")
      */
     public function inscription(Request $request)
     {
@@ -106,7 +106,7 @@ class UserController extends Controller
 
                 $space = new Space();
                 $space->setName($user->getDateInscription()->format('Ymd').$user->getPseudo());
-                $space->setPath("../public".$space->getName()."/");
+                $space->setPath("../public/".$space->getName()."/");
                 $space->setSize(1000000);
 
                 $user->setSpace($space);
@@ -128,7 +128,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user/profil", name="app_profil")
+     * @Route("/profil", name="app_profil")
      */
     public function profil(){
         $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -138,7 +138,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user/update", name="app_update_user")
+     * @Route("/update", name="app_update_user")
      */
     public function update(Request $request){
 
