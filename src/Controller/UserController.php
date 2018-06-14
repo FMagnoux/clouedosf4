@@ -12,14 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Filesystem\Filesystem;
 use App\Entity\File;
 use App\Entity\User;
+use App\Entity\Space;
 
 
 class UserController extends Controller
 {
     /**
-     * @Route("/user/login", name="app_login")
+     * @Route("/login", name="app_login")
      */
     public function login(Request $request)
     {
@@ -45,7 +47,7 @@ class UserController extends Controller
             if (!$userDb) {
                 return $this->render('user/login.html.twig', array(
                     'form' => $form->createView(),
-                    'errors' => "Les identifiants sont incorrect"
+                    'errors' => "Les identifiants sont incorrects"
                 ));
             }
             else {
@@ -56,7 +58,7 @@ class UserController extends Controller
 
                 $event = new InteractiveLoginEvent($request, $token);
                 $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
-                return $this->redirectToRoute('app_show');
+                return $this->redirectToRoute('app_show_space', array('id' => $userDb->getSpace()->getId()));
             }
         }
 
@@ -66,7 +68,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user/inscription", name="app_inscription")
+     * @Route("/inscription", name="app_inscription")
      */
     public function inscription(Request $request)
     {
@@ -98,10 +100,19 @@ class UserController extends Controller
                     'errors' => $liste_erreurs
                 ));
             } else {
+                $fileSystem = new Filesystem();
+
                 $user->setDateInscription(new \DateTime());
-                $user->setFolder($user->getDateInscription()->format('Ymd').$user->getPseudo());
-                mkdir("../public/".$user->getFolder(), 777);
-                mkdir("../public/".$user->getFolder()."/profil", 777);
+
+                $space = new Space();
+                $space->setName($user->getDateInscription()->format('Ymd').$user->getPseudo());
+                $space->setPath("../public".$space->getName()."/");
+                $space->setSize(1000000);
+
+                $user->setSpace($space);
+
+                $fileSystem->mkdir("../public/".$space->getName(), 0777);
+                $fileSystem->mkdir("../public/".$space->getName()."/profil", 0777);
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);

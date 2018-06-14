@@ -9,42 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class File
 {
+
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="files")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
-
-    /**
-     * @param User $user
-     */
-    public function setUser(\App\Entity\User $user)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $dateAdd;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $dateUpdate;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $userId;
+    private $space;
 
     /**
      * @ORM\Id()
@@ -57,6 +27,16 @@ class File
      * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateAdd;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateUpdate;
 
     /**
      * @ORM\Column(type="integer")
@@ -74,10 +54,39 @@ class File
     private $extension;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $nbDownload;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Share", mappedBy="files")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $shares;
+
+
+
+    public function __construct()
+    {
+        $this->shares = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function addShare(\App\Entity\Share $share)
+    {
+        $this->shares[] = $share;
+        $share->setFile($this); // On ajoute ceci
+        return $this;
+    }
+
+    public function removeShare(\App\Entity\Share $share)
+    {
+        $this->shares->removeElement($share);
+    }
+
+    public function getShare()
+    {
+        return $this->shares;
+    }
 
     /**
      * @return mixed
@@ -220,4 +229,38 @@ class File
     {
         $this->nbDownload = $nbDownload;
     }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(\App\Entity\User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSpace()
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param mixed $space
+     */
+    public function setSpace($space): void
+    {
+        $this->space = $space;
+    }
+
+
 }

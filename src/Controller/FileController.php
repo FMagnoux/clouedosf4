@@ -13,7 +13,7 @@ use App\Entity\File;
 class FileController extends Controller
 {
     /**
-     * @Route("/file/upload", name="app_upload")
+     * @Route("/file/upload", name="app_upload_file")
      */
 
     public function upload(Request $request)
@@ -30,15 +30,20 @@ class FileController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = new File();
 
             $data = $form->getData();
-            $file = new File();
+
             $user = $this->get('security.token_storage')->getToken()->getUser();
 
+            $space = $user->getSpace();
+
             $fileUploaded = $data['fileupload'];
+
             $file->setName(str_replace(array(" ", "."), "_",$data['name']));
             $file->setExtension($fileUploaded->guessExtension());
-            if($user->getSpace() - $fileUploaded->getSize() <= 0){
+
+            if($space->getSize() - $fileUploaded->getSize() <= 0){
                 return $this->render('file/upload.html.twig', array(
                     'form' => $form->createView(),
                     'errorName' => "Il n'y a pas assez d'espace pour intégrer ce fichier"
@@ -47,23 +52,21 @@ class FileController extends Controller
             else {
                 if($this->checkUniqueName($file->getName())){
 
-                    $file->setPath('../public/'.$user->getFolder().'/'.$data['name'].".".$fileUploaded->guessExtension());
+                    $file->setPath($data['name'].".".$fileUploaded->guessExtension());
                     $file->setSize($fileUploaded->getSize());
 
-                    $fileUploaded->move('../public/'.$user->getFolder(), $data['name'].".".$fileUploaded->guessExtension());
+                    $fileUploaded->move("../public/".$space->getName(), $data['name'].".".$fileUploaded->guessExtension());
 
                     $file->setDateAdd(new \DateTime());
                     $file->setDateUpdate(new \DateTime());
-                    $file->setUser($user);
-                    $file->setUserId($user->getId());
-
-                    $user->setSpace($user->getSpace() - $file->getSize());
+                    $space->addFile($file);
+                    $space->setSize($user->getSpace()->getSize() - $file->getSize());
 
                     $entityManager = $this->getDoctrine()->getManager();
-                    $entityManager->persist($file, $user);
+                    $entityManager->persist($space);
                     $entityManager->flush();
 
-                    return $this->redirectToRoute('app_show');
+                    return $this->redirectToRoute('app_show_space', array('id' => $space->getId()));
                 }
                 else {
                     return $this->render('file/upload.html.twig', array(
@@ -194,9 +197,7 @@ class FileController extends Controller
      * @return bool
      */
     private function checkUniqueName($nameFile){
-        $files = $this->getDoctrine()
-            ->getRepository(File::class)
-            ->findBy(array('userId' => $this->get('security.token_storage')->getToken()->getUser()->getId()));
+        $files = $this->get('security.token_storage')->getToken()->getUser()->getSpace()->getFiles();
 
         foreach ($files as $key => $value){
             if($files[$key]->getName() == $nameFile){

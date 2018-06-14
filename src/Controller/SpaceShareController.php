@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -82,7 +83,9 @@ class SpaceShareController extends Controller
             if($usersBdd[$key]->getId() == $user->getId()){
                 unset($usersBdd[$key]);
             }
-            $users[$usersBdd[$key]->getPseudo()] = $usersBdd[$key]->getId();
+            else {
+                $users[$usersBdd[$key]->getPseudo()] = $usersBdd[$key]->getId();
+            }
         }
 
         $formBuilder
@@ -123,6 +126,9 @@ class SpaceShareController extends Controller
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($spaceShare);
                 $entityManager->flush();
+
+                return $this->redirectToRoute('app_show_specific_space', array('main' => "true"));
+
             }
         }
 
@@ -132,17 +138,77 @@ class SpaceShareController extends Controller
     }
 
     /**
-     * @Route("/space/share/delete", name="app_space_update_specific")
+     * @Route("/space/share/delete/{id}", name="app_space_delete_specific")
      */
     public function delete($id){
+        $link = $this->getDoctrine()
+            ->getRepository(SpaceShare::class)
+            ->find($id);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($link);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_show_specific_space', array('main' => "true"));
 
     }
 
-
     /**
-     * @Route("/space/share/update", name="app_space_delete_specific")
+     * @Route("/space/share/update/{id}", name="app_space_update_specific")
      */
-    public function update($id){
+    public function update($id, Request $request){
+        $link = $this->getDoctrine()
+            ->getRepository(SpaceShare::class)
+            ->find($id);
 
+        $formBuilder = $this->createFormBuilder();
+        $formBuilder
+            ->add('lifetime', DateType::class, array(
+                'data' => $link->getLife()
+            ))
+            ->add('password', PasswordType::class, array(
+                'required' => false
+            ));
+
+            $formBuilder->add('update', SubmitType::class, ['label' => 'Modifier la relation']);
+
+            if($link->getPassword()){
+                $formBuilder->add('deletepassword', CheckboxType::class, array(
+                    'required' => false,
+                    'disabled' => false,
+                    'label' => "Supprimer le mot de passe"
+                ));
+            }
+
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $relation = $form->getData();
+
+            $today = new \DateTime('NOW');
+            if($relation['lifetime'] < $today){
+                return $this->render('space_share/update.html.twig', [
+                    'errorTime' => "La date indiquée est inférieure à la date du jour",
+                    'form' => $form->createView(),
+                ]);
+            }
+            else {
+                $link->setLife($relation['lifetime']);
+                if($relation['password']){
+                    $link->setPassword($relation['password']);
+                }
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($link);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_show_specific_space', array('main' => "true"));
+            }
+        }
+
+        return $this->render('space_share/update.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

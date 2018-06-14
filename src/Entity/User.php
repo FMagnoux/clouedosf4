@@ -17,6 +17,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class User implements UserInterface
 {
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Space", cascade={"persist"})
+     */
+    private $space;
+
+    /**
      * @var
      */
     private $username;
@@ -30,48 +35,6 @@ class User implements UserInterface
      * @var string
      */
     private $salt;
-
-    /**
-     * @return array
-     */
-    public function getRoles() {
-        return $this->roles;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getSalt() {
-        return $this->salt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername() {
-        return $this->username;
-    }
-
-    /**
-     *
-     */
-    public function eraseCredentials() {
-        // Ici nous n'avons rien à effacer.
-        // Cela aurait été le cas si nous avions un mot de passe en clair.
-    }
-
-    /**
-     * User constructor.
-     */
-    public function __construct() {
-        $this->roles = array("ROLE_USER");
-        $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-    }
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $space = 1000000;
 
     /**
      * @ORM\Id()
@@ -103,19 +66,72 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=190, unique=true)
-     */
-    private $folder;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $dateInscription;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $pathImg;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Share", mappedBy="user")
+     */
+    private $shares;
+
+    public function addShare(\App\Entity\Share $share)
+    {
+        $this->shares[] = $share;
+        $share->setFile($this);
+        return $this;
+    }
+
+    public function removeShare(\App\Entity\Share $share)
+    {
+        $this->shares->removeElement($share);
+    }
+
+    public function getShare()
+    {
+        return $this->shares;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles() {
+        return $this->roles;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSalt() {
+        return $this->salt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername() {
+        return $this->username;
+    }
+
+    /**
+     *
+     */
+    public function eraseCredentials() {}
+
+    /**
+     * User constructor.
+     */
+    public function __construct() {
+        $this->roles = array("ROLE_USER");
+        $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->shares = new \Doctrine\Common\Collections\ArrayCollection();
+
+    }
 
     /**
      * @return mixed
@@ -131,22 +147,6 @@ class User implements UserInterface
     public function setDateInscription($dateInscription): void
     {
         $this->dateInscription = $dateInscription;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFolder()
-    {
-        return $this->folder;
-    }
-
-    /**
-     * @param mixed $folder
-     */
-    public function setFolder($folder): void
-    {
-        $this->folder = $folder;
     }
 
     /**
@@ -217,6 +217,22 @@ class User implements UserInterface
     /**
      * @return mixed
      */
+    public function getPathImg()
+    {
+        return $this->pathImg;
+    }
+
+    /**
+     * @param mixed $pathImg
+     */
+    public function setPathImg($pathImg): void
+    {
+        $this->pathImg = $pathImg;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getSpace()
     {
         return $this->space;
@@ -230,21 +246,7 @@ class User implements UserInterface
         $this->space = $space;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPathImg()
-    {
-        return $this->pathImg;
-    }
 
-    /**
-     * @param mixed $pathImg
-     */
-    public function setPathImg($pathImg): void
-    {
-        $this->pathImg = $pathImg;
-    }
 
 
 }
