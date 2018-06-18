@@ -15,7 +15,7 @@
                                     <p class="card-text">Lien actif jusqu'au {{ share.life|date('d/m/Y') }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <a href="{{ path('app_update_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Voir</button></a>
+                                            <a id="" onclick="checkPassword('{{ share.password }}', '{{ share.space.id }}')"><button type="button" class="btn btn-sm btn-outline-primary">Voir</button></a>
                                         </div>
                                         {% if share.password %}
                                             <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
@@ -32,16 +32,37 @@
         <div class="row justify-content-center">
             <div class="col=12 mt-3">
                 <div class="jumbotron ">
-                    <h1 class="display-4">Vous ne partagez votre espace avec personne</h1>
-                    <p class="lead">Créer une relation pour partager vos documents avec vos amis</p>
+                    <h1 class="display-4">Personne ne partage son espace avec vous</h1>
+                    <p class="lead">Demandez à vos amis de partagez leur espace avec vous</p>
                     <hr class="my-4">
                     <p class="lead">
-                        <a class="btn btn-primary btn-lg" href="{{ path('app_create_share') }}" role="button">Ajouter une relation</a>
                     </p>
                 </div>
             </div>
         </div>
     {% endif %}
+    <script>
+        function checkPassword(password, idSpace) {
+            var passwordEntry = prompt("Veuillez indiquer le mot de passe pour accéder à l'espace");
+            if(passwordEntry != password){
+                alert("Mot de passe incorrect");
+            }
+            else {
+                jQuery.ajax({
+                    method : "post",
+                    url: "{{ path('app_space_access') }}",
+                    data: {
+                        idSpace: idSpace,
+                    },
+                    complete: function(data)
+                    {
+                        location.href = xhr.redirect;
+                    }
+                });
+            }
+
+        }
+    </script>
 {% endblock %}
 
 

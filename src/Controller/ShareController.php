@@ -45,7 +45,7 @@ class ShareController extends Controller
     public function showSecond(){
         $shares = $this->getDoctrine()
             ->getRepository(Share::class)
-            ->findBy(array('user_id' => $this->get('security.token_storage')->getToken()->getUser()->getId()));
+            ->findBy(array('user' => $this->get('security.token_storage')->getToken()->getUser()));
 
         return $this->render('share/second.html.twig', [
             'shares' => $shares

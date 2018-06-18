@@ -17,16 +17,16 @@ security:
         main:
             anonymous: true
             form_login:
-                login_path: user/login
-                check_path: user/login
+                login_path: login
+                check_path: login
             logout:
-                path: /user/logout
-                target: /user/login
+                path: /logout
+                target: /login
     access_control:
-        - { path: ^/user/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/user/logout$, roles: ROLE_USER }
-        - { path: ^/user/profil$, roles: ROLE_USER }
-        - { path: ^/user/update$, roles: ROLE_USER }
-        - { path: ^/user/delete$, roles: ROLE_USER }
+        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/logout$, roles: ROLE_USER }
+        - { path: ^/profil$, roles: ROLE_USER }
+        - { path: ^/update$, roles: ROLE_USER }
+        - { path: ^/delete$, roles: ROLE_USER }
         - { path: ^/file/show, roles: ROLE_USER }
         - { path: ^/file/upload, roles: ROLE_USER }
