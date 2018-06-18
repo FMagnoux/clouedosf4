@@ -105,7 +105,7 @@ class UserController extends Controller
                 $user->setDateInscription(new \DateTime());
 
                 $space = new Space();
-                $space->setName($user->getDateInscription()->format('Ymd').$user->getPseudo());
+                $space->setName($user->getDateInscription()->format('Ymd').str_replace(array(" ","."), "", $user->getPseudo()));
                 $space->setPath("../public/".$space->getName()."/");
                 $space->setSize(1000000);
 
@@ -175,10 +175,10 @@ class UserController extends Controller
             }
             else {
                 if($user->getPathImg()){
-                    unlink('../public/'.$user->getPathImg());
+                    unlink($user->getPathImg());
                 }
-                $user->setPathImg($user->getFolder().'/profil/'.$fileUploaded->getClientOriginalName());
-                $fileUploaded->move('../public/'.$user->getFolder()."/profil/", $fileUploaded->getClientOriginalName());
+                $user->setPathImg('profil/'.$fileUploaded->getClientOriginalName());
+                $fileUploaded->move($user->getSpace()->getPath()."profil/", $fileUploaded->getClientOriginalName());
 
                 if($userFields['password']){
                     $user->setPassword($userFields['password']);
@@ -199,24 +199,25 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user/delete", name="app_delete_user")
+     * @Route("/delete", name="app_delete_user")
      */
     public function delete(){
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $files = $this->getDoctrine()
-            ->getRepository(File::class)
-            ->findBy(array('userId' => $this->get('security.token_storage')->getToken()->getUser()->getId()));
+        $space = $user->getSpace();
+        $files = $space->getFiles();
+
+        $shares = $space->getShares();
 
         $entityManager = $this->getDoctrine()->getManager();
 
         foreach ($files as $key => $value){
-            if(unlink($files[$key]->getPath())) {
+            if(unlink($space->getPath().$files[$key]->getPath())) {
                 $entityManager->remove($files[$key]);
             }
         }
 
-        if(rmdir("../public/".$user->getFolder())){
+        if(rmdir($space->getPath())){
             $entityManager->remove($user);
         }
 

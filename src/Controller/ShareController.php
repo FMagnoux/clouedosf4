@@ -29,12 +29,8 @@ class ShareController extends Controller
      */
     public function showMain()
     {
-        $shares = $this->getDoctrine()
-            ->getRepository(Share::class)
-            ->findBy(array('space' => $this->get('security.token_storage')->getToken()->getUser()->getSpace()));
-
         return $this->render('share/main.html.twig', [
-            'shares' => $shares
+            'shares' => $this->get('security.token_storage')->getToken()->getUser()->getSpace()->getShares()
         ]);
     }
 

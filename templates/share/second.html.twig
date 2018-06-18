@@ -54,9 +54,14 @@
                     data: {
                         idSpace: idSpace,
                     },
-                    complete: function(data)
+                    success: function(msg){
+                        if (msg.status == 200) {
+                            location.href = msg.redirect;
+                        }
+                    },
+                    complete: function(xhr)
                     {
-                        location.href = xhr.redirect;
+
                     }
                 });
             }

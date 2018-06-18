@@ -58,31 +58,6 @@ class File
      */
     private $nbDownload;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Share", mappedBy="files")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $shares;
-
-
-
-    public function __construct()
-    {
-        $this->shares = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function addShare(\App\Entity\Share $share)
-    {
-        $this->shares[] = $share;
-        $share->setFile($this); // On ajoute ceci
-        return $this;
-    }
-
-    public function removeShare(\App\Entity\Share $share)
-    {
-        $this->shares->removeElement($share);
-    }
-
     public function getShare()
     {
         return $this->shares;

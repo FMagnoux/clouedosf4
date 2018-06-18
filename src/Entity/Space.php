@@ -37,6 +37,47 @@ class Space
     private $files;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Share", mappedBy="space")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $shares;
+
+    /**
+     * Space constructor.
+     */
+    public function __construct()
+    {
+        $this->shares = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * @param Share $share
+     * @return $this
+     */
+    public function addShare(\App\Entity\Share $share)
+    {
+        $this->shares[] = $share;
+        $share->setFile($this);
+        return $this;
+    }
+
+    /**
+     * @param Share $share
+     */
+    public function removeShare(\App\Entity\Share $share)
+    {
+        $this->shares->removeElement($share);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShares()
+    {
+        return $this->shares;
+    }
+
+    /**
      * @return mixed
      */
     public function getId()

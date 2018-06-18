@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-sm-6 col-md-4">
                         {% if user.pathImg %}
-                            <img src="{{ asset(user.pathImg) }}" height="300" width="200" alt=""/>
+                            <img src="{{ asset(user.space.path ~ user.pathImg) }}" height="300" width="200" alt=""/>
                         {% else  %}
                             <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
                         {% endif %}
