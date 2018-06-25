@@ -17,10 +17,14 @@
                                     <p class="card-text">Téléchargé {{ file.nbDownload }} fois</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <a href="{{ path('app_download_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Télécharger</button></a>
-                                            <a href="{{ path('app_update_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
-                                            <a href="{{ path('app_delete_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
-                                        </div>
+                                            {% if notOwner is defined %}
+                                                <a href="{{ path('app_download_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Télécharger</button></a>
+                                            {% else %}
+                                                <a href="{{ path('app_download_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Télécharger</button></a>
+                                                <a href="{{ path('app_update_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
+                                                <a href="{{ path('app_delete_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
+                                            {% endif %}
+                                           </div>
                                         <small class="text-muted">Ajouté le {{ file.dateAdd|date('d/m/Y') }}</small>
                                     </div>
                                 </div>

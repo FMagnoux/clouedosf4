@@ -15,18 +15,33 @@ security:
             pattern: ^/use/login$
             security: false
         main:
+            access_denied_handler: App\Security\AccessDeniedHandler
             anonymous: true
             form_login:
-                login_path: login
-                check_path: login
+                login_path: app_login
+                check_path: app_space_show
+                username_parameter: "form[email]"
+                password_parameter: "form[password]"
             logout:
                 path: /logout
                 target: /login
     access_control:
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/logout$, roles: ROLE_USER }
-        - { path: ^/profil$, roles: ROLE_USER }
-        - { path: ^/update$, roles: ROLE_USER }
-        - { path: ^/delete$, roles: ROLE_USER }
+        - { path: ^/home, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/logout, roles: ROLE_USER }
+        - { path: ^/profil, roles: ROLE_USER }
+        - { path: ^/update, roles: ROLE_USER }
+        - { path: ^/delete, roles: ROLE_USER }
         - { path: ^/file/show, roles: ROLE_USER }
         - { path: ^/file/upload, roles: ROLE_USER }
+        - { path: ^/file/update, roles: ROLE_USER }
+        - { path: ^/file/delete, roles: ROLE_USER }
+        - { path: ^/file/download/$, roles: ROLE_USER }
+        - { path: ^/share/home, roles: ROLE_USER }
+        - { path: ^/share/show/main, roles: ROLE_USER }
+        - { path: ^/share/show/second, roles: ROLE_USER }
+        - { path: ^/share/create, roles: ROLE_USER }
+        - { path: ^/share/update, roles: ROLE_USER }
+        - { path: ^/share/delete, roles: ROLE_USER }
+        - { path: ^/space, roles: ROLE_USER }

@@ -2,36 +2,75 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Entity\Space;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use App\Entity\Share;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class SpaceController extends Controller
 {
     /**
-     *
-     * @Route("/space/access/", name="app_space_access")
-     * @Method({"POST"})
-     */
-    public function access(Request $request){
-        $url = $this->generateUrl('app_space_show', array("id" => $request->get("idSpace")));
-        return $this->redirect($url);
-    }
-
-    /**
      * @Route("/space/{id}", name="app_space_show")
      */
-    public function show($id)
+    public function show($id, \Symfony\Component\HttpFoundation\Request $request)
     {
         $space = $this->getDoctrine()
             ->getRepository(Space::class)
             ->find($id);
 
-        return $this->render('space/show.html.twig', array(
-            'files' => $space->getFiles()
-        ));
+        $parameters = array(
+            'files' => $space->getFiles(),
+        );
+
+        if($space->getId() != $this->get('security.token_storage')->getToken()->getUser()->getSpace()->getId()){
+            $share = $this->getDoctrine()
+                ->getRepository(Share::class)
+                ->findBy(array('space' => $space->getId(), 'user'=> $this->get('security.token_storage')->getToken()->getUser()));
+            if(!$share){
+                return $this->render('space/access.html.twig', array(
+                    "notAvailable" => true
+                ));
+            }
+            else {
+                if($share[0]->getPassword()){
+                    $formBuilder = $this->createFormBuilder();
+
+                    $formBuilder->add('password', PasswordType::class, array(
+                        'required' => false
+                    ));
+
+                    $formBuilder->add('send', SubmitType::class, ['label' => 'Soumettre']);
+
+                    $form = $formBuilder->getForm();
+
+                    $form->handleRequest($request);
+
+                    if ($form->isSubmitted() && $form->isValid()) {
+                        $password = $form->getData();
+
+                        if($password['password'] != $share->getPassword()){
+                            return $this->render('space/access.html.twig', array(
+                                'form' => $form->createView(),
+                                'errorPassword' => "Le mot de passe renseigné est incorrect"
+                            ));
+                        }
+                        else {
+                            $parameters['notOwner'] = true;
+                            return $this->render('space/show.html.twig', $parameters);
+                        }
+                    }
+
+                    return $this->render('space/access.html.twig', array(
+                        'form' => $form->createView(),
+                    ));
+                }
+                else {
+                    $parameters['notOwner'] = true;
+                    return $this->render('space/show.html.twig', $parameters);
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+{% block body %}
+        <div class="row justify-content-center">
+            <div class="col=12 mt-3">
+                <div class="jumbotron ">
+                    <h1 class="display-4">Oops</h1>
+                    <p class="lead">Vous demandez une page dont vous n'avez pas accès</p>
+                    <hr class="my-4">
+                    <p>Connectez vous pour accéder aux différentes fonctionnalités</p>
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{{ path('app_login') }}" role="button">Se connecter</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+

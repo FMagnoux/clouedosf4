@@ -13,10 +13,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Filesystem\Filesystem;
-use App\Entity\File;
 use App\Entity\User;
 use App\Entity\Space;
-
 
 class UserController extends Controller
 {
@@ -207,7 +205,8 @@ class UserController extends Controller
         $space = $user->getSpace();
         $files = $space->getFiles();
 
-        $shares = $space->getShares();
+        $sharesSpace = $space->getShares();
+        $userShares = $user->getShare();
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -216,8 +215,19 @@ class UserController extends Controller
                 $entityManager->remove($files[$key]);
             }
         }
+        foreach ($sharesSpace as $key => $value){
+            $entityManager->remove($sharesSpace[$key]);
+        }
 
-        if(rmdir($space->getPath())){
+        foreach ($userShares as $key => $value){
+            $entityManager->remove($userShares[$key]);
+        }
+
+        if($user->getPathImg()){
+            unlink($space->getPath().$user->getPathImg());
+        }
+
+        if(rmdir($space->getPath()."profil") && rmdir($space->getPath())){
             $entityManager->remove($user);
         }
 

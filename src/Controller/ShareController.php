@@ -7,7 +7,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
-use App\Entity\File;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -29,8 +28,12 @@ class ShareController extends Controller
      */
     public function showMain()
     {
+        $shares = $this->getDoctrine()
+            ->getRepository(Share::class)
+            ->findBy(array('space' => $this->get('security.token_storage')->getToken()->getUser()->getSpace()));
+
         return $this->render('share/main.html.twig', [
-            'shares' => $this->get('security.token_storage')->getToken()->getUser()->getSpace()->getShares()
+            'shares' => $shares
         ]);
     }
 

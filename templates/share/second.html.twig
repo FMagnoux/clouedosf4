@@ -48,22 +48,7 @@
                 alert("Mot de passe incorrect");
             }
             else {
-                jQuery.ajax({
-                    method : "post",
-                    url: "{{ path('app_space_access') }}",
-                    data: {
-                        idSpace: idSpace,
-                    },
-                    success: function(msg){
-                        if (msg.status == 200) {
-                            location.href = msg.redirect;
-                        }
-                    },
-                    complete: function(xhr)
-                    {
-
-                    }
-                });
+                window.location = "{{ path('app_space_show', {'id': "2" }) }}";
             }
 
         }
