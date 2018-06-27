@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Service\Email;
+use App\Service\Token;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -240,9 +242,9 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/forgot/password", name="app_forgot_password")
+     * @Route("/password/forgot", name="app_forgot_password")
      */
-    public function findPassword(Request $request, EmailController $email){
+    public function forgotPassword(Request $request, Email $email, Token $token){
 
         $formBuilder = $this->createFormBuilder();
 
@@ -268,12 +270,37 @@ class UserController extends Controller
                 ));
             }
             else {
-                $email->send($userDb->getEmail(), 'email/forgot_password.html.twig');
+                try {
+                    $token->generate("TOKEN_FORGOT_PASSWORD");
+                    $parameters = array(
+                        'url' => $this->generateUrl('app_reset_password', array('value' => $token->getToken()->getValue()))
+                    );
+                    $email->send($userDb->getEmail(),"[Clouedo] Reinitialisation du mot de passe", 'email/forgot_password.html.twig', $parameters);
+
+                    return $this->render('user/forgot_password.html.twig', array(
+                        'form' => $form->createView(),
+                        'success' => "Un email vous a été envoyé pour reinitialiser votre mot de passe"
+                    ));
+                }
+                catch (\Exception $e){
+                    return $this->render('user/forgot_password.html.twig', array(
+                        'form' => $form->createView(),
+                        'error' => $e->getMessage()
+                    ));
+                }
             }
         }
 
         return $this->render('user/forgot_password.html.twig', array(
             'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/password/reset/{value}", name="app_reset_password")
+     */
+    public function resetPassword($value){
+        return $this->render('user/reset_password.html.twig', array(
         ));
     }
 
