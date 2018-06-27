@@ -50,7 +50,7 @@ class SpaceController extends Controller
                     if ($form->isSubmitted() && $form->isValid()) {
                         $password = $form->getData();
 
-                        if($password['password'] != $share->getPassword()){
+                        if($password['password'] != $share[0]->getPassword()){
                             return $this->render('space/access.html.twig', array(
                                 'form' => $form->createView(),
                                 'errorPassword' => "Le mot de passe renseigné est incorrect"
@@ -71,6 +71,9 @@ class SpaceController extends Controller
                     return $this->render('space/show.html.twig', $parameters);
                 }
             }
+        }
+        else {
+            return $this->render('space/show.html.twig', $parameters);
         }
     }
 }

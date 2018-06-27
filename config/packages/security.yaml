@@ -19,7 +19,6 @@ security:
             anonymous: true
             form_login:
                 login_path: app_login
-                check_path: app_space_show
                 username_parameter: "form[email]"
                 password_parameter: "form[password]"
             logout:

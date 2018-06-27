@@ -15,7 +15,7 @@
                                     <p class="card-text">Lien actif jusqu'au {{ share.life|date('d/m/Y') }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <a id="" onclick="checkPassword('{{ share.password }}', '{{ share.space.id }}')"><button type="button" class="btn btn-sm btn-outline-primary">Voir</button></a>
+                                            <a href="{{ path('app_show_space', { 'id': space.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Voir</button></a>
                                         </div>
                                         {% if share.password %}
                                             <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
@@ -41,18 +41,6 @@
             </div>
         </div>
     {% endif %}
-    <script>
-        function checkPassword(password, idSpace) {
-            var passwordEntry = prompt("Veuillez indiquer le mot de passe pour accéder à l'espace");
-            if(passwordEntry != password){
-                alert("Mot de passe incorrect");
-            }
-            else {
-                window.location = "{{ path('app_space_show', {'id': "2" }) }}";
-            }
-
-        }
-    </script>
 {% endblock %}
 
 

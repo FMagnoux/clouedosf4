@@ -12,6 +12,6 @@ class ErrorController extends Controller
      */
     public function denied()
     {
-        return $this->render('error/index.html.twig', []);
+        return $this->render('error/forgot_password.html.twig', []);
     }
 }

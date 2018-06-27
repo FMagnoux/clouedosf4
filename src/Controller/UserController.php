@@ -240,10 +240,49 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/forgot/password", name="app_forgot_password")
+     */
+    public function findPassword(Request $request, EmailController $email){
+
+        $formBuilder = $this->createFormBuilder();
+
+        $formBuilder
+            ->add('email',TextType::class)
+            ->add('submit', SubmitType::class, array('label' => 'Soumettre'));
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $userDb = $this->getDoctrine()
+                ->getRepository(User::class)
+                ->findOneBy(array('email' => $user['email']));
+
+            if(!$userDb){
+                return $this->render('user/forgot_password.html.twig', array(
+                    'form' => $form->createView(),
+                    'error' => "Cette email n'est associé à aucun utilisateur"
+                ));
+            }
+            else {
+                $email->send($userDb->getEmail(), 'email/forgot_password.html.twig');
+            }
+        }
+
+        return $this->render('user/forgot_password.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
      * @Route("/logout", name="app_logout")
      */
     public function logout()
     {
         $this->get('security.token_storage')->setToken(null);
     }
+
 }

@@ -2,8 +2,8 @@
 
 {% block body %}
 
-{{ form_start(form) }}
-<h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Connexion</h1>
+    {{ form_start(form) }}
+    <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Connexion</h1>
     {% if errors is defined %}
         <div class="row">
             <div class="col-md-4"></div>
@@ -11,21 +11,26 @@
         </div>
         <br>
     {% endif %}
-<div class="row">
-    <div class="col-md-4"></div>
-    {{ form_widget(form.email, { 'attr': {'class': 'form-control col-md-4','placeholder':'Adresse Email'}}) }}
-</div>
-<br>
-<div class="row">
-    <div class="col-md-4"></div>
-    {{ form_widget(form.password, { 'attr': {'class': 'form-control col-md-4 ','placeholder':'Mot de passe'}}) }}
-</div>
-<br>
-<div class="row">
-    <div class="col-md-4"></div>
-    {{ form_widget(form.login, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
-</div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.email, { 'attr': {'class': 'form-control col-md-4','placeholder':'Adresse Email'}}) }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.password, { 'attr': {'class': 'form-control col-md-4 ','placeholder':'Mot de passe'}}) }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <a href="{{ path('app_forgot_password') }}">Mot de passe oublié ?</a>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.login, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
+    </div>
 
-{{ form_end(form) }}
+    {{ form_end(form) }}
 
 {% endblock %}
