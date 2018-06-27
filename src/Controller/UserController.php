@@ -70,7 +70,7 @@ class UserController extends Controller
     /**
      * @Route("/signup", name="app_signup")
      */
-    public function inscription(Request $request)
+    public function inscription(Request $request, Email $email, Token $token)
     {
         $user = new User();
 
@@ -118,7 +118,22 @@ class UserController extends Controller
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_login', array('accountCreated' => "Votre compte a bien été créé"));
+                try {
+
+                    $token->getToken()->setUser($user);
+                    $token->generate("TOKEN_VALID_ACCOUNT");
+                    $parameters = array(
+                        'url' => $this->generateUrl('app_validate_account', array('value' => $token->getToken()->getValue())),
+                        'user' => $user
+                    );
+                    $email->send($user->getEmail(),"[Clouedo] Validation inscription", 'email/validate_account.html.twig', $parameters);
+
+                }
+                catch (\Exception $e){
+
+                }
+
+                return $this->redirectToRoute('app_login', array('accountCreated' => "Votre compte a bien été créé, un mail a été envoyé pour le valider"));
             }
         }
 
@@ -271,6 +286,7 @@ class UserController extends Controller
             }
             else {
                 try {
+                    $token->getToken()->setUser($userDb);
                     $token->generate("TOKEN_FORGOT_PASSWORD");
                     $parameters = array(
                         'url' => $this->generateUrl('app_reset_password', array('value' => $token->getToken()->getValue()))
@@ -301,6 +317,61 @@ class UserController extends Controller
      */
     public function resetPassword($value){
         return $this->render('user/reset_password.html.twig', array(
+        ));
+    }
+
+    /**
+     * @Route("/validation/notsend", name="app_validation_not_send")
+     */
+    public function validationNotSend(Request $request, Email $email, Token $token){
+        $formBuilder = $this->createFormBuilder();
+
+        $formBuilder
+            ->add('email',TextType::class)
+            ->add('submit', SubmitType::class, array('label' => 'Soumettre'));
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $userDb = $this->getDoctrine()
+                ->getRepository(User::class)
+                ->findOneBy(array('email' => $user['email']));
+
+            if(!$userDb){
+                return $this->render('user/validate_account.html.twig', array(
+                    'form' => $form->createView(),
+                    'error' => "Cette email n'est associé à aucun utilisateur"
+                ));
+            }
+            else {
+                try {
+                    $token->getToken()->setUser($userDb);
+                    $token->generate("TOKEN_VALID_ACCOUNT");
+                    $parameters = array(
+                        'url' => $this->generateUrl('app_validate_account', array('value' => $token->getToken()->getValue()))
+                    );
+                    $email->send($userDb->getEmail(),"[Clouedo] Validation inscription", 'email/validate_account.html.twig', $parameters);
+
+                    return $this->render('user/validate_account.html.twig', array(
+                        'form' => $form->createView(),
+                        'success' => "Un email vous a été envoyé pour valider votre compte"
+                    ));
+                }
+                catch (\Exception $e){
+                    return $this->render('user/validate_account.html.twig', array(
+                        'form' => $form->createView(),
+                        'error' => $e->getMessage()
+                    ));
+                }
+            }
+        }
+
+        return $this->render('user/validate_account.html.twig', array(
+            'form' => $form->createView(),
         ));
     }
 

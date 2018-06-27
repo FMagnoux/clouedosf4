@@ -80,6 +80,16 @@ class User implements UserInterface
      */
     private $shares;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+
+
+    /**
+     * @param Share $share
+     * @return $this
+     */
     public function addShare(\App\Entity\Share $share)
     {
         $this->shares[] = $share;
@@ -87,11 +97,17 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @param Share $share
+     */
     public function removeShare(\App\Entity\Share $share)
     {
         $this->shares->removeElement($share);
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
     public function getShare()
     {
         return $this->shares;
@@ -245,6 +261,23 @@ class User implements UserInterface
     {
         $this->space = $space;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param mixed $active
+     */
+    public function setActive($active): void
+    {
+        $this->active = $active;
+    }
+
 
 
 

@@ -55,6 +55,14 @@ class Token
             throw new \Exception("Token's type is undefined");
         }
 
+        $tokens = $this->em
+            ->getRepository(\App\Entity\Token::class)
+            ->findBy(array('user' => $this->token->getUser()));
+
+        if(count($tokens) > 3){
+            throw new \Exception('More 3 tokens are active, try a other time');
+        }
+
         $this->token->setValue(md5(random_bytes(10)));
         $this->token->setType($type);
 

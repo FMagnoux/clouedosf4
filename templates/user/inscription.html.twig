@@ -30,6 +30,10 @@
         <div class="col-md-4"></div>
         {{ form_widget(form.save, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
     </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <a href="{{ path('app_validation_not_send') }}">Je n'ai pas reçu mon email de validation</a>
+    </div>
     {{ form_end(form) }}
 {% endblock %}
 
