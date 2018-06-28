@@ -99,6 +99,9 @@ class Token
         return true;
     }
 
+    /**
+     *
+     */
     public function clean(){
         $tokens = $this->em
             ->getRepository(Token::class)

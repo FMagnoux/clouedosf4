@@ -72,21 +72,21 @@ class UserController extends Controller
      */
     public function inscription(Request $request, Email $email, Token $token)
     {
-        $user = new User();
+            $user = new User();
 
-        $formBuilder = $this->createFormBuilder($user);
+            $formBuilder = $this->createFormBuilder($user);
 
-        $formBuilder
-            ->add('email',TextType::class)
-            ->add('password',PasswordType::class)
-            ->add('pseudo',TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Créer mon compte'));
+            $formBuilder
+                ->add('email',TextType::class)
+                ->add('password',PasswordType::class)
+                ->add('pseudo',TextType::class)
+                ->add('save', SubmitType::class, array('label' => 'Créer mon compte'));
 
-        $form = $formBuilder->getForm();
+            $form = $formBuilder->getForm();
 
-        $form->handleRequest($request);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
 
