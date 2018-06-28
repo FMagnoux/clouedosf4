@@ -19,6 +19,15 @@ class TokenRepository extends ServiceEntityRepository
         parent::__construct($registry, Token::class);
     }
 
+    public function findOutDated()
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.life < :val')
+            ->setParameter('val', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Token[] Returns an array of Token objects
 //     */
