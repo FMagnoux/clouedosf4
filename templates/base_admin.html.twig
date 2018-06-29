@@ -17,14 +17,13 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
     {% endblock %}
 
 </head>
 <body>
 {% block nav %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ path('app_home') }}">Clouedo</a>
+        <a class="navbar-brand" href="{{ path('app_admin') }}">Clouedo</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -33,23 +32,14 @@
             <ul class="navbar-nav mr-auto">
                 {% if app.user %}
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('app_space_show', { 'id': app.user.space.id }) }}">Espace<span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="{{ path('app_admin_add_task') }}">Ajouter une tâche<span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('app_profil') }}">Profil <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('app_upload_file') }}">Ajouter un fichier <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('app_share_home') }}">Espaces Partagés <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('app_contact') }}">Contact <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="{{ path('app_admin_show_tasks') }}">Configurer<span class="sr-only">(current)</span></a>
                     </li>
                     {% if app.user.roles[0] == "ROLE_ADMIN" %}
                         <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('app_admin') }}">Administration <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="{{ path('app_space_show', { 'id': app.user.space.id }) }}">Espace <span class="sr-only">(current)</span></a>
                         </li>
                     {% endif %}
                     <li class="nav-item active">

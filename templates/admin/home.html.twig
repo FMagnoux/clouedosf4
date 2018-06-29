@@ -1,0 +1,27 @@
+{% extends "base_admin.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        {% for task in tasks %}
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3" style="margin-left:15%">
+                <div class="db-wrapper">
+                    <div class="db-pricing-eleven db-bk-color-one">
+                        <div class="price">
+                            <span class="price-text"></span>{{ task.name }}
+                        </div>
+                        <div class="plan-div">
+                            <p class="plan-text">
+                                {{ task.description }}
+                            </p>
+                        </div>
+                        <div class="pricing-footer">
+                            <a href="{{ task.path }}" class="btn db-button-color-square btn-m round">Voir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

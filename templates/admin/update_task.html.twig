@@ -1,0 +1,43 @@
+{% extends "base_admin.html.twig" %}
+{% block body %}
+    {{ form_start(form) }}
+    <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Modifier une tâche</h1>
+    {% if success is defined %}
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div style="color: green">{{ success }}</div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div>Nom de la tâche</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.name, { 'attr': {'class': 'form-control col-md-4','placeholder':'Nom de la tâche'} }) }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div>Description</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.description, { 'attr': {'class': 'form-control col-md-4','placeholder':'Description'} }) }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div>Activée</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.activate, { 'attr': {'class': 'form-control col-md-4'} }) }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4"></div>
+        {{ form_widget(form.update, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
