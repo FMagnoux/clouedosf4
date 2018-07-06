@@ -51,6 +51,7 @@ class SpaceController extends Controller
                         $password = $form->getData();
 
                         if($password['password'] != $share[0]->getPassword()){
+                            $this->get('session')->getFlashBag()->clear();
                             $this->addFlash(
                                 'error',
                                 "La date indiquée est inférieure à la date du jour"

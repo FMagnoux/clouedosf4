@@ -56,6 +56,7 @@ class ContactController extends Controller
             $entityManager->persist($contact);
             $entityManager->flush();
 
+            $this->get('session')->getFlashBag()->clear();
             $this->addFlash(
                 'notice',
                 'Votre message a été envoyé'

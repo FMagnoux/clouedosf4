@@ -66,6 +66,7 @@ class AdminController extends Controller
             $entityManager->persist($task);
             $entityManager->flush();
 
+            $this->get('session')->getFlashBag()->clear();
             $this->addFlash(
                 'notice',
                 'La tâche a été ajoutée, merci de configurer celle ci'
@@ -116,6 +117,7 @@ class AdminController extends Controller
         $entityManager->remove($task);
         $entityManager->flush();
 
+        $this->get('session')->getFlashBag()->clear();
         $this->addFlash(
             'notice',
             'La tâche a été supprimée'
@@ -172,6 +174,7 @@ class AdminController extends Controller
             $entityManager->persist($task);
             $entityManager->flush();
 
+            $this->get('session')->getFlashBag()->clear();
             $this->addFlash(
                 'notice',
                 $message

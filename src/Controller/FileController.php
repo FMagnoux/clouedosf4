@@ -40,6 +40,7 @@ class FileController extends Controller
             $file->setExtension($fileUploaded->guessExtension());
 
             if($space->getSize() - $fileUploaded->getSize() <= 0){
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     "Il n'y a pas assez d'espace pour intégrer ce fichier"
@@ -66,6 +67,7 @@ class FileController extends Controller
                     return $this->redirectToRoute('app_space_show', array('id' => $space->getId()));
                 }
                 else {
+                    $this->get('session')->getFlashBag()->clear();
                     $this->addFlash(
                         'error',
                         "Le nom du fichier est déjà existant dans votre espace"
@@ -98,6 +100,7 @@ class FileController extends Controller
             return $this->redirectToRoute('app_show');
         }
 
+        $this->get('session')->getFlashBag()->clear();
         $this->addFlash(
             'error',
             "Impossible de supprimer le fichier"
@@ -147,6 +150,7 @@ class FileController extends Controller
 
             }
             else {
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     "Le nom du fichier est déjà existant dans votre espace"

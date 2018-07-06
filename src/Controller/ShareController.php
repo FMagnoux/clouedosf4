@@ -93,6 +93,7 @@ class ShareController extends Controller
             $relation = $form->getData();
             $today = new \DateTime('NOW');
             if($relation['life'] < $today){
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     "La date indiquée est inférieure à la date du jour"
@@ -158,6 +159,7 @@ class ShareController extends Controller
 
             $today = new \DateTime('NOW');
             if($relation['life'] < $today){
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     "La date indiquée est inférieure à la date du jour"

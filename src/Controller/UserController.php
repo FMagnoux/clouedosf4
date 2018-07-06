@@ -126,6 +126,7 @@ class UserController extends Controller
                     $email->send($user->getEmail(),"[Clouedo] Validation inscription", 'email/validate_account.html.twig', $parameters);
                 }
                 catch (\Exception $e){}
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'notice',
                     'Votre compte a bien été créé, un mail a été envoyé pour le valider'
@@ -175,6 +176,7 @@ class UserController extends Controller
             $fileUploaded = $userFields['fileprofil'];
 
             if(!in_array($fileUploaded->guessExtension(),array("jpg","jpeg","png"))){
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     'La photo de profil transmise ne respecte pas le bon format de fichier (.jpg, .jpeg, .png)'
@@ -267,6 +269,7 @@ class UserController extends Controller
                 ->findOneBy(array('email' => $user['email']));
 
             if(!$userDb){
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     'Cette email n\'est associé à aucun utilisateur'
@@ -281,12 +284,14 @@ class UserController extends Controller
                     );
                     $email->send($userDb->getEmail(),"[Clouedo] Reinitialisation du mot de passe", 'email/forgot_password.html.twig', $parameters);
 
+                    $this->get('session')->getFlashBag()->clear();
                     $this->addFlash(
                         'notice',
                         'Un email vous a été envoyé pour reinitialiser votre mot de passe'
                     );
                 }
                 catch (\Exception $e){
+                    $this->get('session')->getFlashBag()->clear();
                     $this->addFlash(
                         'error',
                         $e->getMessage()
@@ -327,6 +332,7 @@ class UserController extends Controller
                 ->findOneBy(array('email' => $user['email']));
 
             if(!$userDb){
+                $this->get('session')->getFlashBag()->clear();
                 $this->addFlash(
                     'error',
                     'Cette email n\'est associé à aucun utilisateur'
@@ -341,12 +347,14 @@ class UserController extends Controller
                     );
                     $email->send($userDb->getEmail(),"[Clouedo] Validation inscription", 'email/validate_account.html.twig', $parameters);
 
+                    $this->get('session')->getFlashBag()->clear();
                     $this->addFlash(
                         'notice',
                         'Un email vous a été envoyé pour valider votre compte'
                     );
                 }
                 catch (\Exception $e){
+                    $this->get('session')->getFlashBag()->clear();
                     $this->addFlash(
                         'error',
                         $e->getMessage()
