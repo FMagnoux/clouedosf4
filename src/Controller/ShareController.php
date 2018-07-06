@@ -90,15 +90,13 @@ class ShareController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $relation = $form->getData();
-
             $today = new \DateTime('NOW');
             if($relation['life'] < $today){
-                return $this->render('share/create.html.twig', [
-                    'errorTime' => "La date indiquée est inférieure à la date du jour",
-                    'form' => $form->createView(),
-                ]);
+                $this->addFlash(
+                    'error',
+                    "La date indiquée est inférieure à la date du jour"
+                );
             }
             else {
                 $share = new Share();
@@ -138,7 +136,6 @@ class ShareController extends Controller
             ->find($id);
 
         $formBuilder = $this->createFormBuilder();
-
         $formBuilder
             ->add('life', DateType::class, array(
             ))
@@ -161,10 +158,10 @@ class ShareController extends Controller
 
             $today = new \DateTime('NOW');
             if($relation['life'] < $today){
-                return $this->render('share/update.html.twig', [
-                    'errorTime' => "La date indiquée est inférieure à la date du jour",
-                    'form' => $form->createView(),
-                ]);
+                $this->addFlash(
+                    'error',
+                    "La date indiquée est inférieure à la date du jour"
+                );
             }
             else {
                 $share->setLife($relation['life']);

@@ -11,6 +11,7 @@
                     </div>
                     <div class="col-sm-6 col-md-8">
                         {{ form_start(form) }}
+                        {% include 'message.html.twig' %}
                         <div class="row">
                             <div class="col-md-3"></div>
                             {{ form_errors(form.email, { 'attr': {'class': 'form-control col-md-5'}}) }}
@@ -31,9 +32,6 @@
                         <br>
                         <div class="row">
                             <div class="col-md-3"></div>
-                            {% if errorImg is defined %}
-                                <p style="color: red">{{ errorImg }}</p>
-                            {% endif %}
                             {{ form_row(form.fileprofil) }}
                         </div>
                         <br>

@@ -89,9 +89,7 @@ class UserController extends Controller
             if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
-
             $validator = $this->get('validator');
-
             $liste_erreurs = $validator->validate($user);
 
             if(!$form->isValid()) {
@@ -119,7 +117,6 @@ class UserController extends Controller
                 $entityManager->flush();
 
                 try {
-
                     $token->getToken()->setUser($user);
                     $token->generate("TOKEN_VALID_ACCOUNT");
                     $parameters = array(
@@ -127,16 +124,15 @@ class UserController extends Controller
                         'user' => $user
                     );
                     $email->send($user->getEmail(),"[Clouedo] Validation inscription", 'email/validate_account.html.twig', $parameters);
-
                 }
-                catch (\Exception $e){
-
-                }
-
-                return $this->redirectToRoute('app_login', array('accountCreated' => "Votre compte a bien été créé, un mail a été envoyé pour le valider"));
+                catch (\Exception $e){}
+                $this->addFlash(
+                    'notice',
+                    'Votre compte a bien été créé, un mail a été envoyé pour le valider'
+                );
+                return $this->redirectToRoute('app_login');
             }
         }
-
         return $this->render('user/inscription.html.twig', array(
             'form' => $form->createView(),
         ));
@@ -158,9 +154,7 @@ class UserController extends Controller
     public function update(Request $request){
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
-
         $formBuilder = $this->createFormBuilder();
-
         $formBuilder
             ->add('email',TextType::class, array('data' => $user->getEmail()))
             ->add('password', RepeatedType::class, array(
@@ -177,16 +171,14 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $userFields = $form->getData();
-
             $fileUploaded = $userFields['fileprofil'];
 
             if(!in_array($fileUploaded->guessExtension(),array("jpg","jpeg","png"))){
-                return $this->render('user/update.html.twig', array(
-                    'form' => $form->createView(),
-                    'errorImg' => "La photo de profil transmise ne respecte pas le bon format de fichier (.jpg, .jpeg, .png)"
-                ));
+                $this->addFlash(
+                    'error',
+                    'La photo de profil transmise ne respecte pas le bon format de fichier (.jpg, .jpeg, .png)'
+                );
             }
             else {
                 if($user->getPathImg()){
@@ -199,7 +191,6 @@ class UserController extends Controller
                     $user->setPassword($userFields['password']);
                 }
                 $user->setEmail($userFields['email']);
-
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
@@ -218,13 +209,10 @@ class UserController extends Controller
      */
     public function delete(){
         $user = $this->get('security.token_storage')->getToken()->getUser();
-
         $space = $user->getSpace();
         $files = $space->getFiles();
-
         $sharesSpace = $space->getShares();
         $userShares = $user->getShare();
-
         $entityManager = $this->getDoctrine()->getManager();
 
         foreach ($files as $key => $value){
@@ -279,10 +267,10 @@ class UserController extends Controller
                 ->findOneBy(array('email' => $user['email']));
 
             if(!$userDb){
-                return $this->render('user/forgot_password.html.twig', array(
-                    'form' => $form->createView(),
-                    'error' => "Cette email n'est associé à aucun utilisateur"
-                ));
+                $this->addFlash(
+                    'error',
+                    'Cette email n\'est associé à aucun utilisateur'
+                );
             }
             else {
                 try {
@@ -293,16 +281,16 @@ class UserController extends Controller
                     );
                     $email->send($userDb->getEmail(),"[Clouedo] Reinitialisation du mot de passe", 'email/forgot_password.html.twig', $parameters);
 
-                    return $this->render('user/forgot_password.html.twig', array(
-                        'form' => $form->createView(),
-                        'success' => "Un email vous a été envoyé pour reinitialiser votre mot de passe"
-                    ));
+                    $this->addFlash(
+                        'notice',
+                        'Un email vous a été envoyé pour reinitialiser votre mot de passe'
+                    );
                 }
                 catch (\Exception $e){
-                    return $this->render('user/forgot_password.html.twig', array(
-                        'form' => $form->createView(),
-                        'error' => $e->getMessage()
-                    ));
+                    $this->addFlash(
+                        'error',
+                        $e->getMessage()
+                    );
                 }
             }
         }
@@ -325,27 +313,24 @@ class UserController extends Controller
      */
     public function validationNotSend(Request $request, Email $email, Token $token){
         $formBuilder = $this->createFormBuilder();
-
         $formBuilder
             ->add('email',TextType::class)
             ->add('submit', SubmitType::class, array('label' => 'Soumettre'));
 
         $form = $formBuilder->getForm();
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
-
             $userDb = $this->getDoctrine()
                 ->getRepository(User::class)
                 ->findOneBy(array('email' => $user['email']));
 
             if(!$userDb){
-                return $this->render('user/validate_account.html.twig', array(
-                    'form' => $form->createView(),
-                    'error' => "Cette email n'est associé à aucun utilisateur"
-                ));
+                $this->addFlash(
+                    'error',
+                    'Cette email n\'est associé à aucun utilisateur'
+                );
             }
             else {
                 try {
@@ -356,20 +341,19 @@ class UserController extends Controller
                     );
                     $email->send($userDb->getEmail(),"[Clouedo] Validation inscription", 'email/validate_account.html.twig', $parameters);
 
-                    return $this->render('user/validate_account.html.twig', array(
-                        'form' => $form->createView(),
-                        'success' => "Un email vous a été envoyé pour valider votre compte"
-                    ));
+                    $this->addFlash(
+                        'notice',
+                        'Un email vous a été envoyé pour valider votre compte'
+                    );
                 }
                 catch (\Exception $e){
-                    return $this->render('user/validate_account.html.twig', array(
-                        'form' => $form->createView(),
-                        'error' => $e->getMessage()
-                    ));
+                    $this->addFlash(
+                        'error',
+                        $e->getMessage()
+                    );
                 }
             }
         }
-
         return $this->render('user/validate_account.html.twig', array(
             'form' => $form->createView(),
         ));

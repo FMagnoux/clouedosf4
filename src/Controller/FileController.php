@@ -31,23 +31,19 @@ class FileController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = new File();
-
             $data = $form->getData();
-
             $user = $this->get('security.token_storage')->getToken()->getUser();
-
             $space = $user->getSpace();
-
             $fileUploaded = $data['fileupload'];
 
             $file->setName(str_replace(array(" ", "."), "_",$data['name']));
             $file->setExtension($fileUploaded->guessExtension());
 
             if($space->getSize() - $fileUploaded->getSize() <= 0){
-                return $this->render('file/upload.html.twig', array(
-                    'form' => $form->createView(),
-                    'errorName' => "Il n'y a pas assez d'espace pour intégrer ce fichier"
-                ));
+                $this->addFlash(
+                    'error',
+                    "Il n'y a pas assez d'espace pour intégrer ce fichier"
+                );
             }
             else {
                 if($this->checkUniqueName($file->getName())){
@@ -70,14 +66,13 @@ class FileController extends Controller
                     return $this->redirectToRoute('app_space_show', array('id' => $space->getId()));
                 }
                 else {
-                    return $this->render('file/upload.html.twig', array(
-                        'form' => $form->createView(),
-                        'errorName' => "Le nom du fichier est déjà existant dans votre espace"
-                    ));
+                    $this->addFlash(
+                        'error',
+                        "Le nom du fichier est déjà existant dans votre espace"
+                    );
                 }
             }
         }
-
         return $this->render('file/upload.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -103,9 +98,11 @@ class FileController extends Controller
             return $this->redirectToRoute('app_show');
         }
 
-        return $this->render('file/show.html.twig', array(
-            'errorName' => "Impossible de supprimer le fichier"
-        ));
+        $this->addFlash(
+            'error',
+            "Impossible de supprimer le fichier"
+        );
+        return $this->render('file/show.html.twig');
     }
 
     /**
@@ -150,10 +147,10 @@ class FileController extends Controller
 
             }
             else {
-                return $this->render('file/update.html.twig', array(
-                    'form' => $form->createView(),
-                    'errorName' => "Le nom du fichier est déjà existant dans votre espace"
-                ));
+                $this->addFlash(
+                    'error',
+                    "Le nom du fichier est déjà existant dans votre espace"
+                );
             }
         }
 

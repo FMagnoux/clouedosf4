@@ -3,6 +3,7 @@
 {% block body %}
     {{ form_start(form) }}
     <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Inscription</h1>
+    {% include 'message.html.twig' %}
     <div class="row">
         <div class="col-md-4"></div>
         <div>{{ form_errors(form.email) }}</div>

@@ -13,6 +13,9 @@ use App\Entity\Contact;
 
 class ContactController extends Controller
 {
+    public function index(){
+
+    }
     /**
      * @Route("/contact", name="app_contact")
      */
@@ -53,13 +56,23 @@ class ContactController extends Controller
             $entityManager->persist($contact);
             $entityManager->flush();
 
-            return $this->render('contact/send.html.twig', [
-                'form' => $form->createView(),
-                'success' => "Votre message a été envoyé"
-            ]);
+            $this->addFlash(
+                'notice',
+                'Votre message a été envoyé'
+            );
         }
         return $this->render('contact/send.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/admin/contact/{id}", name="app_admin_contact_show")
+     */
+    public function contactShow($id)
+    {
+        return $this->render('admin/contact_response.html.twig', [
+            'controller_name' => 'AdminController',
         ]);
     }
 }

@@ -51,9 +51,12 @@ class SpaceController extends Controller
                         $password = $form->getData();
 
                         if($password['password'] != $share[0]->getPassword()){
+                            $this->addFlash(
+                                'error',
+                                "La date indiquée est inférieure à la date du jour"
+                            );
                             return $this->render('space/access.html.twig', array(
-                                'form' => $form->createView(),
-                                'errorPassword' => "Le mot de passe renseigné est incorrect"
+                                'form' => $form->createView()
                             ));
                         }
                         else {
