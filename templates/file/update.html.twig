@@ -2,12 +2,9 @@
 {% block body %}
     {{ form_start(form) }}
     <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Modifier un fichier</h1>
+    {% include 'message.html.twig' %}
     <div class="row">
         <div class="col-md-4"></div>
-        {% if errorName is defined %}
-            <p style="color: red">{{ errorName }}</p>
-            <br>
-        {% endif %}
         {{ form_widget(form.name, { 'attr': {'class': 'form-control col-md-4'}}) }}
     </div>
     <br>

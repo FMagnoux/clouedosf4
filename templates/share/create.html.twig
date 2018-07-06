@@ -3,6 +3,7 @@
 {% block body %}
     {{ form_start(form) }}
     <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Ajouter une relation</h1>
+    {% include 'message.html.twig' %}
     <div class="row">
         <div class="col-md-4"></div>
         <div>Utilisateur</div>
@@ -12,14 +13,6 @@
         {{ form_widget(form.user, { 'attr': {'class': 'form-control col-md-4'}}) }}
     </div>
     <br>
-    <div class="row">
-        <div class="col-md-4"></div>
-        {% if errorTime is defined %}
-            <div style="color: red">{{ errorTime }}</div>
-        {% else %}
-            <div>Date de fin de la relation</div>
-        {% endif %}
-    </div>
     <div class="row">
         <div class="col-md-4"></div>
         {{ form_widget(form.life, { 'attr': {'class': 'col-md-4'} }) }}
