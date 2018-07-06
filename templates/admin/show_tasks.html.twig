@@ -16,7 +16,7 @@
                                 </p>
                             </div>
                             <div class="pricing-footer">
-                                <a href="">{{ path(task.path) }}<button type="button" class="btn btn-sm btn-outline-success">Gérer</button></a>
+                                <a href="{{ path(task.path) }}"><button type="button" class="btn btn-sm btn-outline-success">Gérer</button></a>
                                 <a href="{{ path('app_admin_update_task', { 'id': task.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
                                 <a href="{{ path('app_admin_delete_task', { 'id': task.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
                             </div>

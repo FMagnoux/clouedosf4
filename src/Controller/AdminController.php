@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Contact;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -145,6 +144,8 @@ class AdminController extends Controller
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
+        $message = "La tâche a été modifiée avec succès";
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $datas = $form->getData();
@@ -154,10 +155,7 @@ class AdminController extends Controller
                 }
                 else {
                     $task->setActivate(false);
-                    $this->addFlash(
-                        'warning',
-                        'La tâche a été modifiée, malheuresement elle ne peux pas être modifiée car elle ne respecte pas les conditions d\'activation'
-                    );
+                    $message .= " malheuresement elle ne peux pas être activée car elle ne respecte pas les conditions d'activation";
                 }
             }
             else {
@@ -176,7 +174,7 @@ class AdminController extends Controller
 
             $this->addFlash(
                 'notice',
-                'La tâche a été modifiée avec succès'
+                $message
             );
         }
         return $this->render('admin/update_task.html.twig', [
@@ -185,7 +183,7 @@ class AdminController extends Controller
     }
 
     private function checkTask($entityName){
-        if(class_exists($entityName) && class_exists($entityName."Controller")){
+        if(class_exists("App\Entity\\".$entityName) && class_exists("App\Controller\\".$entityName."Controller")){
             return true;
         }
         else {
