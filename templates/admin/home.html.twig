@@ -2,26 +2,43 @@
 
 {% block body %}
     <div class="container">
-        {% for task in tasks %}
-        <div class="row">
-            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3" style="margin-left:15%">
-                <div class="db-wrapper">
-                    <div class="db-pricing-eleven db-bk-color-one">
-                        <div class="price">
-                            <span class="price-text"></span>{{ task.name }}
-                        </div>
-                        <div class="plan-div">
-                            <p class="plan-text">
-                                {{ task.description }}
-                            </p>
-                        </div>
-                        <div class="pricing-footer">
-                            <a href="{{ task.path }}" class="btn db-button-color-square btn-m round">Voir</a>
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3" style="margin-left:15%">
+                        <div class="db-wrapper">
+                            <div class="db-pricing-eleven db-bk-color-one">
+                                <div class="price">
+                                    <span class="price-text"></span>{{ task.name }}
+                                </div>
+                                <div class="plan-div">
+                                    <p class="plan-text">
+                                        {{ task.description }}
+                                    </p>
+                                </div>
+                                <div class="pricing-footer">
+                                    <a href="{{ path(task.path) }}" class="btn db-button-color-square btn-m round">Voir</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            {% endfor %}
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col=12 mt-3">
+                    <div class="jumbotron ">
+                        <h1 class="display-4">Pas de tâches actives</h1>
+                        <p class="lead">Aucune tâche n'est correctement configurée/créée</p>
+                        <hr class="my-4">
+                        <p>Ajouter ou configurer les tâches</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg" href="{{ path('app_admin_add_task') }}" role="button">Ajouter une tâche</a>
+                            <a class="btn btn-primary btn-lg" href="{{ path('app_admin_show_tasks') }}" role="button">Configurer</a>
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
-        {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

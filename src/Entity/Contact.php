@@ -32,6 +32,11 @@ class Contact
     private $time;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $response;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -110,13 +115,30 @@ class Contact
     }
 
     /**
-     * @param mixed $user
+     * @param $user
+     * @return Contact
      */
-    public function setUser($user): void
+    public function setUser($user): self
     {
         $this->user = $user;
+        return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
 
-
+    /**
+     * @param $response
+     * @return Contact
+     */
+    public function setResponse($response): self
+    {
+        $this->response = $response;
+        return $this;
+    }
 }

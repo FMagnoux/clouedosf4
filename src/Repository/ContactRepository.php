@@ -19,32 +19,15 @@ class ContactRepository extends ServiceEntityRepository
         parent::__construct($registry, Contact::class);
     }
 
-//    /**
-//     * @return Contact[] Returns an array of Contact objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function getMessages($first_result, $max_results = 10)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.response = :response')
+            ->setParameter('response', false)
+            ->setFirstResult($first_result)
+            ->setMaxResults($max_results)
+            ->getQuery();
 
-    /*
-    public function findOneBySomeField($value): ?Contact
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb;
     }
-    */
 }

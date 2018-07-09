@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Email;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Entity\Contact;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 
 class ContactController extends Controller
@@ -50,7 +53,8 @@ class ContactController extends Controller
             $contact->setTitle($datas['title'])
                 ->setMessage($datas['message'])
                 ->setTime(new \DateTime())
-                ->setUser($this->get('security.token_storage')->getToken()->getUser());
+                ->setUser($this->get('security.token_storage')->getToken()->getUser())
+                ->setResponse(false);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($contact);
@@ -68,12 +72,76 @@ class ContactController extends Controller
     }
 
     /**
-     * @Route("/admin/contact/{id}", name="app_admin_contact_show")
+     * @Route("/admin/contact/{page}", defaults={"page": "0"}, name="app_admin_contact")
      */
-    public function contactShow($id)
+    public function contactShow($page)
     {
-        return $this->render('admin/contact_response.html.twig', [
-            'controller_name' => 'AdminController',
+        $contacts = $this->getDoctrine()
+            ->getRepository(Contact::class)
+            ->getMessages($page * 10);
+        $adapter = new DoctrineORMAdapter($contacts);
+        $pagerfanta = new Pagerfanta($adapter);
+        return $this->render('contact/admin_contact.html.twig', [
+            'contacts' => $pagerfanta,
         ]);
+    }
+
+    /**
+     * @Route("/admin/contact/response/{id}", name="app_contact_response")
+     */
+    public function contactResponse($id, Request $request, Email $email)
+    {
+        $contact = $this->getDoctrine()
+            ->getRepository(Contact::class)
+            ->find($id);
+
+        $formBuilder = $this->createFormBuilder();
+        $formBuilder
+            ->add('message', TextareaType::class)
+            ->add('send', SubmitType::class, array('label' => 'Envoyer'));
+
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user = $contact->getUser();
+            $datas = $form->getData();
+            $parameters = array(
+                "message" => $datas['message'],
+                "user" => $this->get('security.token_storage')->getToken()->getUser(),
+                "contact" => $contact
+            );
+            $email->send(
+                $user->getEmail(),
+                "[Clouedo] Réponse pour le sujet :".$contact->getTitle(),
+                'email/contact_response.html.twig', $parameters
+            );
+
+            $contact->setResponse(true);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($contact);
+            $entityManager->flush();
+
+            $this->get('session')->getFlashBag()->clear();
+            $this->addFlash(
+                'notice',
+                'La réponse a été envoyée'
+            );
+            return $this->redirectToRoute('app_admin_contact');
+        }
+        return $this->render('contact/admin_contact_response.html.twig', [
+            'contact' => $contact,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/contact/delete/{id}", name="app_contact_delete")
+     */
+    public function contactDelete($id)
+    {
+
     }
 }

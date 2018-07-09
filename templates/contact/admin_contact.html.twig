@@ -1,0 +1,42 @@
+{% extends "base_admin.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        {% include 'message.html.twig' %}
+        {% if contacts %}
+            {% for contact in contacts %}
+                <div class="row">
+                    <div class="col-xs-8 col-sm_8 col-md-8 col-lg-8" style="margin-left:15%">
+                        <div class="db-wrapper">
+                            <div class="db-pricing-eleven db-bk-color-one">
+                                <div class="price">
+                                    <span class="price-text"></span>{{ contact.title }}
+                                </div>
+                                <div class="pricing-footer">
+                                    <a href="{{ path('app_contact_response', {"id" : contact.id}) }}" class="btn db-button-color-square btn-m round">Répondre</a>
+                                    <a href="{{ path('app_contact_delete', {"id" : contact.id}) }}" class="btn db-button-color-square btn-m round">Supprimer</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col=12 mt-3">
+                    <div class="jumbotron ">
+                        <h1 class="display-4">Pas de messages</h1>
+                        <p class="lead">Aucun message n'a été posté</p>
+                        <hr class="my-4">
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class=" pagerfanta">
+                {{ pagerfanta(contacts, 'twitter_bootstrap4') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

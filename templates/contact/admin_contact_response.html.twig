@@ -1,0 +1,30 @@
+{% extends "base_admin.html.twig" %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="media msg col-md-4">
+                <div class="media-body">
+                    <small class="pull-right time"><i class="fa fa-clock-o"></i>Le {{ contact.time|date('d/m/Y')  }} à {{ contact.time|date('H:i:s') }}</small>
+                    <h5 class="media-heading">Message de {{ contact.user.pseudo }}</h5>
+                    <small class="col-lg-10">{{ contact.message }}</small>
+                </div>
+            </div>
+            <br>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4"></div>
+            {{ form_widget(form.message, { 'attr': {'class': 'form-control col-md-4','placeholder':'Réponse'} }) }}
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4"></div>
+            {{ form_widget(form.send, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

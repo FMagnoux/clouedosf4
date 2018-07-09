@@ -2,28 +2,44 @@
 
 {% block body %}
     <div class="container">
-        {% for task in tasks %}
-            <div class="row">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3" style="margin-left:15%">
-                    <div class="db-wrapper">
-                        <div class="db-pricing-eleven db-bk-color-one">
-                            <div class="price">
-                                <span class="price-text"></span>{{ task.name }}
-                            </div>
-                            <div class="plan-div">
-                                <p class="plan-text">
-                                    {{ task.description }}
-                                </p>
-                            </div>
-                            <div class="pricing-footer">
-                                <a href="{{ path(task.path) }}"><button type="button" class="btn btn-sm btn-outline-success">Gérer</button></a>
-                                <a href="{{ path('app_admin_update_task', { 'id': task.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
-                                <a href="{{ path('app_admin_delete_task', { 'id': task.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3" style="margin-left:15%">
+                        <div class="db-wrapper">
+                            <div class="db-pricing-eleven db-bk-color-one">
+                                <div class="price">
+                                    <span class="price-text"></span>{{ task.name }}
+                                </div>
+                                <div class="plan-div">
+                                    <p class="plan-text">
+                                        {{ task.description }}
+                                    </p>
+                                </div>
+                                <div class="pricing-footer">
+                                    <a href="{{ path(task.path) }}"><button type="button" class="btn btn-sm btn-outline-success">Gérer</button></a>
+                                    <a href="{{ path('app_admin_update_task', { 'id': task.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
+                                    <a href="{{ path('app_admin_delete_task', { 'id': task.id }) }}" onclick="return confirm('Êtes vous certain de vouloir supprimer cette tâche ? Aucune récupération n\'est possible')"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            {% endfor %}
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col=12 mt-3">
+                    <div class="jumbotron ">
+                        <h1 class="display-4">Pas de tâches à configurée</h1>
+                        <p class="lead">Aucune tâche n'est créée</p>
+                        <hr class="my-4">
+                        <p>Ajouter une tâche</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg" href="{{ path('app_admin_add_task') }}" role="button">Ajouter une tâche</a>
+                        </p>
+                    </div>
+                </div>
             </div>
-        {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
