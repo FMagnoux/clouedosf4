@@ -1,42 +1,57 @@
 {% extends "base_admin.html.twig" %}
 
 {% block body %}
-    <div class="container">
-        {% include 'message.html.twig' %}
-        {% if contacts %}
-            {% for contact in contacts %}
-                <div class="row">
-                    <div class="col-xs-8 col-sm_8 col-md-8 col-lg-8" style="margin-left:15%">
-                        <div class="db-wrapper">
-                            <div class="db-pricing-eleven db-bk-color-one">
-                                <div class="price">
-                                    <span class="price-text"></span>{{ contact.title }}
-                                </div>
-                                <div class="pricing-footer">
-                                    <a href="{{ path('app_contact_response', {"id" : contact.id}) }}" class="btn db-button-color-square btn-m round">Répondre</a>
-                                    <a href="{{ path('app_contact_delete', {"id" : contact.id}) }}" class="btn db-button-color-square btn-m round">Supprimer</a>
-                                </div>
-                            </div>
-                        </div>
+    {% if contacts %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Messages</h4>
+                    <div class="table-responsive">
+                        {% if contacts %}
+                        <table id="mytable" class="table table-bordred table-striped">
+                            <thead>
+                            <th style="color: white; text-align: center">Titre</th>
+                            <th style="color: white; text-align: center">Message</th>
+                            <th style="color: white; text-align: center">Reçu le</th>
+                            <th style="color: white; text-align: center"></th>
+                            <th style="color: white; text-align: center"></th>
+                            </thead>
+                            <tbody>
+                            {% for contact in contacts %}
+                                <tr style="background-color: white">
+                                    <td style="text-align: center">{{ contact.title }}</td>
+                                    <td style="text-align: center">{{ contact.message }}</td>
+                                    <td style="text-align: center">{{ contact.time|date('d/m/Y') }}</td>
+                                    <td><p data-placement="top" data-toggle="tooltip" title="Répondre"><a href="{{ path('app_contact_response', {"id" : contact.id}) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-send"></span></button></a></p></td>
+                                    <td><p data-placement="top" data-toggle="tooltip" title="Supprimer"><a href="{{ path('app_contact_delete', {"id" : contact.id}) }}"><button class="btn btn-danger btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-trash"></span></button></a></p></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="row justify-content-center">
-                <div class="col=12 mt-3">
-                    <div class="jumbotron ">
-                        <h1 class="display-4">Pas de messages</h1>
-                        <p class="lead">Aucun message n'a été posté</p>
-                        <hr class="my-4">
-                    </div>
+                    {% endif %}
                 </div>
             </div>
-        {% endif %}
+        </div>
         <div class="row">
-            <div class="col-md-4"></div>
+            <div class="col-md-5"></div>
             <div class=" pagerfanta">
                 {{ pagerfanta(contacts, 'twitter_bootstrap4') }}
             </div>
         </div>
-    </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 mt-3">
+                <div class="jumbotron ">
+                    <h1 class="display-4" style="text-align: center">Aucun message</h1>
+                    <p class="lead" style="text-align: center">Aucun utilisateur n'a envoyé de message</p>
+                    <hr class="my-4" style="text-align: center">
+                    <p style="text-align: center"></p>
+                    <p class="lead" style="text-align: center">
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

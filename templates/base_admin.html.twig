@@ -35,11 +35,11 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
                             <li><a href="{{ path('app_admin_add_task') }}"><span class="glyphicon glyphicon-plus"></span> Ajouter</a></li>
-                            <li><a href="{{ path('app_admin_show_tasks') }}"><span class="glyphicon glyphicon-wrench"></span> Configurer</a></li>
+                            <li><a href="{{ path('app_admin') }}"><span class="glyphicon glyphicon-wrench"></span> Configurer</a></li>
                             {% if app.user.roles[0] == "ROLE_ADMIN" %}
                                 <li><a href="{{ path('app_space_show', { 'id': app.user.space.id }) }}"><span class="glyphicon glyphicon-user"></span> Espace</a></li>
                             {% endif %}
-                            <li><a href="{{ path('app_contact') }}"><span class="glyphicon glyphicon-send"></span> Contact</a></li>
+                            <li><a href="{{ path('app_admin_contact') }}"><span class="glyphicon glyphicon-send"></span> Contact</a></li>
                             <li>
                                 <a href="{{ path('app_logout') }}" class="btn btn-default btn-outline btn-circle collapsed"  data-toggle="collapse" href="#nav-collapse4" aria-expanded="false" aria-controls="nav-collapse4"><span class="glyphicon glyphicon-off"></span> Déconnexion <i class=""></i> </a>
                             </li>

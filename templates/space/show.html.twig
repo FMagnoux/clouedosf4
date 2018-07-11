@@ -1,5 +1,6 @@
 {% extends "base.html.twig" %}
 {% block body %}
+    {% if files %}
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -45,6 +46,22 @@
             </div>
         </div>
     </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 mt-3">
+                <div class="jumbotron ">
+                    <h1 class="display-4" style="text-align: center">Aucun fichier</h1>
+                    <p class="lead" style="text-align: center">Vous n'avez télécharger aucun fichier</p>
+                    <hr class="my-4" style="text-align: center">
+                    <p style="text-align: center">Ajouter dès maintenant des fichiers pour compléter votre espace</p>
+                    <p class="lead" style="text-align: center">
+                        <a class="btn btn-primary btn-lg" href="{{ path('app_upload_file') }}" role="button">Ajouter un fichier</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 
 

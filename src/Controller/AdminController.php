@@ -20,7 +20,7 @@ class AdminController extends Controller
     {
         $tasks = $this->getDoctrine()
             ->getRepository(Task::class)
-            ->findBy(array('activate' => true));
+            ->findAll();
 
         return $this->render('admin/home.html.twig', [
             'tasks' => $tasks,
@@ -92,19 +92,6 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/show/tasks", name="app_admin_show_tasks")
-     */
-    public function showTasks(){
-        $tasks = $this->getDoctrine()
-            ->getRepository(Task::class)
-            ->findAll();
-
-        return $this->render('admin/show_tasks.html.twig', [
-            'tasks' => $tasks,
-        ]);
-    }
-
-    /**
      * @Route("/admin/delete/task/{id}", name="app_admin_delete_task")
      */
     public function deleteTask($id)
@@ -122,7 +109,7 @@ class AdminController extends Controller
             'notice',
             'La tâche a été supprimée'
         );
-        return $this->redirectToRoute('app_admin_show_tasks');
+        return $this->redirectToRoute('app_admin');
     }
 
     /**
@@ -179,6 +166,7 @@ class AdminController extends Controller
                 'notice',
                 $message
             );
+            return $this->redirectToRoute('app_admin');
         }
         return $this->render('admin/update_task.html.twig', [
             'form' => $form->createView(),

@@ -105,7 +105,7 @@ class FileController extends Controller
             'error',
             "Impossible de supprimer le fichier"
         );
-        return $this->render('file/show.html.twig');
+        return $this->render('space/show.html.twig');
     }
 
     /**
