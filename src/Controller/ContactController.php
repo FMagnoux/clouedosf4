@@ -142,6 +142,19 @@ class ContactController extends Controller
      */
     public function contactDelete($id)
     {
+        $contact = $this->getDoctrine()
+            ->getRepository(Contact::class)
+            ->find($id);
 
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($contact);
+        $entityManager->flush();
+
+        $this->get('session')->getFlashBag()->clear();
+        $this->addFlash(
+            'notice',
+            'La réponse a été supprimée'
+        );
+        return $this->redirectToRoute('app_admin_contact');
     }
 }
