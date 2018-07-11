@@ -1,54 +1,50 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    {% if files %}
-        <div class="album py-5 bg-light">
-            <div class="container">
-                <div class="row">
-                    {% for file in files %}
-                        <div class="col-md-4">
-                            <div class="card mb-4 box-shadow">
-                                <div>
-                                    <img class="card-img-top" src="{{ asset('images/stripes-light.png') }}" height="60", width="155"/>
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">Nom: {{ file.name }}</p>
-                                    <p class="card-text">Taille: {{ (file.size/1000)|number_format(0) }} Mo</p>
-                                    <p class="card-text">Dernière modification: {{ file.dateUpdate|date('d/m/Y') }}</p>
-                                    <p class="card-text">Téléchargé {{ file.nbDownload }} fois</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            {% if notOwner is defined %}
-                                                <a href="{{ path('app_download_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Télécharger</button></a>
-                                            {% else %}
-                                                <a href="{{ path('app_download_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-success">Télécharger</button></a>
-                                                <a href="{{ path('app_update_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
-                                                <a href="{{ path('app_delete_file', { 'id': file.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
-                                            {% endif %}
-                                           </div>
-                                        <small class="text-muted">Ajouté le {{ file.dateAdd|date('d/m/Y') }}</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Mes fichiers</h4>
+                <div class="table-responsive">
+                    {% if files %}
+                    <table id="mytable" class="table table-bordred table-striped">
+                        <thead>
+                        <th style="color: white; text-align: center">Nom</th>
+                        <th style="color: white; text-align: center">Taille</th>
+                        <th style="color: white; text-align: center">Ajouté le</th>
+                        <th style="color: white; text-align: center">Modifié le</th>
+                        <th style="color: white; text-align: center">Nombre téléchargements</th>
+                        {% if notOwner is defined %}
+                            <th style="color: white; text-align: center"></th>
+                        {% else %}
+                            <th style="color: white; text-align: center"></th>
+                            <th style="color: white; text-align: center"></th>
+                            <th style="color: white; text-align: center"></th>
+                        {% endif %}
+                        </thead>
+                        <tbody>
+                        {% for file in files %}
+                        <tr style="background-color: white">
+                            <td style="text-align: center">{{ file.name }}</td>
+                            <td style="text-align: center">{{ (file.size/1000)|number_format(0) }} Mo</td>
+                            <td style="text-align: center">{{ file.dateAdd|date('d/m/Y') }}</td>
+                            <td style="text-align: center">{{ file.dateUpdate|date('d/m/Y') }}</td>
+                            <td style="text-align: center">{{ file.nbDownload }}</td>
+                            {% if notOwner is defined %}
+                                <td><p data-placement="top" data-toggle="tooltip" title="Télécharger"><a href="{{ path('app_download_file', { 'id': file.id }) }}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-download-alt"></span></button></a></p></td>
+                            {% else %}
+                                <td><p data-placement="top" data-toggle="tooltip" title="Télécharger"><a href="{{ path('app_download_file', { 'id': file.id }) }}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-download-alt"></span></button></a></p></td>
+                                <td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{ path('app_update_file', { 'id': file.id }) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a></p></td>
+                                <td><p data-placement="top" data-toggle="tooltip" title="Supprimer"><a href="{{ path('app_delete_file', { 'id': file.id }) }}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a></p></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+                    {% endif %}
             </div>
         </div>
-    {% else %}
-        <div class="row justify-content-center">
-            <div class="col=12 mt-3">
-                <div class="jumbotron ">
-                    <h1 class="display-4">Pas de fichier</h1>
-                    <p class="lead">Pourquoi laisser l'espace vide alors que vous avez plein de place :)</p>
-                    <hr class="my-4">
-                    <p>Ajouter un ou plusieurs fichiers pour compléter votre espace</p>
-                    <p class="lead">
-                        <a class="btn btn-primary btn-lg" href="{{ path('app_upload') }}" role="button">Ajouter un fichier</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+    </div>
 {% endblock %}
 
 

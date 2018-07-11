@@ -1,43 +1,52 @@
 {% extends "base.html.twig" %}
 {% block body %}
     {% if shares %}
-        <div class="album py-5 bg-light">
-            <div class="container">
-                <div class="row">
-                    {% for share in shares %}
-                        <div class="col-md-4">
-                            <div class="card mb-4 box-shadow">
-                                <div>
-                                    <img class="card-img-top" src="{{ asset('images/stripes-light.png') }}" height="60", width="155"/>
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">Vous partagé votre espace avec {{ share.user.pseudo }}</p>
-                                    <p class="card-text">Lien actif jusqu'au {{ share.life|date('d/m/Y') }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            <a href="{{ path('app_update_share', { 'id': share.id }) }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
-                                            <a href="{{ path('app_delete_share', { 'id': share.id }) }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
-                                        </div>
-                                        {% if share.password %}
-                                            <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Mes partages propriétaires</h4>
+                <div class="table-responsive">
+                    {% if shares %}
+                    <table id="mytable" class="table table-bordred table-striped">
+                        <thead>
+                        <th style="color: white; text-align: center">Qui</th>
+                        <th style="color: white; text-align: center">Jusqu'au</th>
+                        <th style="color: white; text-align: center">Mot de passe</th>
+                        <th style="color: white; text-align: center"></th>
+                        <th style="color: white; text-align: center"></th>
+                        </thead>
+                        <tbody>
+                        {% for share in shares %}
+                            <tr style="background-color: white">
+                                <td style="text-align: center">{{ share.user.pseudo }}</td>
+                                <td style="text-align: center">{{ share.life|date('d/m/Y') }}</td>
+                                {% if share.password %}
+                                    <td style="text-align: center">Oui</td>
+                                {% else %}
+                                    <td style="text-align: center">Non</td>
+                                {% endif %}
+                                <td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{ path('app_update_share', { 'id': share.id }) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a></p></td>
+                                <td><p data-placement="top" data-toggle="tooltip" title="Supprimer"><a href="{{ path('app_delete_share', { 'id': share.id }) }}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a></p></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+                {% endif %}
             </div>
         </div>
+    </div>
     {% else %}
         <div class="row justify-content-center">
-            <div class="col=12 mt-3">
-                <div class="jumbotron">
-                    <h1 class="display-4">Vous ne partagez votre espace avec personne</h1>
-                    <p class="lead">Créer une relation pour partager vos documents avec vos amis</p>
-                    <hr class="my-4">
-                    <p class="lead">
-                        <a class="btn btn-primary btn-lg" href="{{ path('app_create_share') }}" role="button">Ajouter une relation</a>
+            <div class="col-md-2"></div>
+            <div class="col-md-8 mt-3">
+                <div class="jumbotron ">
+                    <h1 class="display-4" style="text-align: center">Espace partagés</h1>
+                    <p class="lead" style="text-align: center">Vous ne partagez votre espace avec personne</p>
+                    <hr class="my-4" style="text-align: center">
+                    <p style="text-align: center">N'hésitez plus, créer tout de suite une relation</p>
+                    <p class="lead" style="text-align: center">
+                        <a class="btn btn-primary btn-lg" href="{{ path('app_create_share') }}" role="button">Créer une relation</a>
                     </p>
                 </div>
             </div>

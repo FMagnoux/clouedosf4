@@ -1,36 +1,32 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-xs-12 col-sm-6 col-md-6">
-            <div class="well well-sm">
-                <div class="row">
-                    <div class="col-sm-6 col-md-4">
-                        {% if user.pathImg %}
-                            <img src="{{ asset(user.space.path ~ user.pathImg) }}" height="300" width="200" alt=""/>
-                        {% else  %}
-                            <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
-                        {% endif %}
-                    </div>
-                    <div class="col-sm-6 col-md-8">
-                        <h4>{{ user.pseudo }}</h4>
-                        <p>
-                            <i class="glyphicon glyphicon-envelope"></i> {{ user.email }}
-                            <br />
-                            <i class="glyphicon glyphicon-cloud"></i> {{ (user.space.size/1000)|number_format(0) }} Mo
-                            <br />
-                            <i class="glyphicon glyphicon-ok"></i> {{ user.dateInscription|date('d/m/Y') }}
-                        </p>
-                        <div class="btn-group">
-                            <a href="{{ path('app_update_user') }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
-                            <a href="{{ path('app_delete_user') }}" onclick="return confirm('Êtes vous certain de vouloir supprimer votre compte ? Aucune récupération n\'est possible')"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
-                        </div>
-                    </div>
+<div class="container">
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
+                {% if user.pathImg %}
+                    <img src="{{ asset(user.space.path ~ user.pathImg) }}" height="300" width="200" alt=""/>
+                {% else  %}
+                    <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
+                {% endif %}            </div>
+            <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
+                <div class="container" style="border-bottom:1px solid black">
+                    <h2>{{ user.pseudo }}</h2>
                 </div>
+                <hr>
+                <ul class="container details">
+                    <li><p><span class="glyphicon glyphicon-envelope one" style="width:50px;"></span> {{ user.email }}</p></li>
+                    <li><p><span class="glyphicon glyphicon-cloud one" style="width:50px;"></span> {{ (user.space.size/1000)|number_format(0) }} Mo</p></li>
+                    <li><p><span class="glyphicon glyphicon-ok one" style="width:50px;"></span> {{ user.dateInscription|date('d/m/Y') }}</p></li>
+                    <div class="btn-group">
+                        <a href="{{ path('app_update_user') }}"><button type="button" class="btn btn-sm btn-outline-primary btn-primary">Modifier</button></a>
+                        <a href="{{ path('app_delete_user') }}" onclick="return confirm('Êtes vous certain de vouloir supprimer votre compte ? Aucune récupération n\'est possible')"><button type="button" class="btn btn-sm btn-outline-danger btn-danger">Supprimer</button></a>
+                    </div>
+                </ul>
             </div>
         </div>
     </div>
-{% endblock %}
+    {% endblock %}
 
 

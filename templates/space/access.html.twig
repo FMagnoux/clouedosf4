@@ -2,21 +2,30 @@
 
 {% block body %}
     {{ form_start(form) }}
-    <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Accéder à l'espace</h1>
-    {% include 'message.html.twig' %}
-    <div class="row">
-        <div class="col-md-4"></div>
-        <div>Mot de passe</div>
-    </div>
-    <div class="row">
-        <div class="col-md-4"></div>
-        {{ form_widget(form.password, { 'attr': {'class': 'form-control col-md-4'}}) }}
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-4"></div>
-        {{ form_widget(form.send, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
-    </div>
+    <section id="contact" class="content-section text-center">
+        <div class="contact-section">
+            <div class="container">
+                <h2>Accéder à l'espace</h2>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Mot de passe</label>
+                                {{ form_widget(form.password, { 'attr': {'class': 'form-control col-md-4','placeholder':'Mot de passe'} }) }}
+                            </div>
+                            <br><br>
+                            <div class="form-group ">
+                                <label for="exampleInputText"></label>
+                                {{ form_widget(form.send, { 'attr': {'class': 'btn btn-lg btn-primary btn-block col-md-4'} }) }}
+                            </div>
+                            {{ form_row(form._token) }}
+                        </form>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     {{ form_end(form) }}
 {% endblock %}
 
